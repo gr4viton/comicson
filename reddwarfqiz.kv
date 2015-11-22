@@ -1,0 +1,57 @@
+#:kivy 1.9
+
+
+<RedDwarfQiz>:
+    cols: 2
+
+    GridLayout:
+        cols:1
+        Button:
+            text: "start"
+
+<StepWidget>:
+    toggle_object: toggle
+    kivy_image: kivy_image
+    stat_label: stat_label
+#    layout_steps_height: 1500
+#    size_hint_y: 0.4
+    size_hint_y: None
+#    height: self.minimum_height * 4
+    height: 300
+#    size_hint_y: layout_steps_height / 400
+    size_hint_x: 1/3
+    cols: 1
+    padding: (2,2,2,2)
+    spacing: (2,2)
+    margin: 1
+    color: .08,.16 , .24
+    canvas.before:
+        Color:
+            rgb: self.color
+        Rectangle:
+            pos: self.x + self.margin, self.y + self.margin + 1
+            size: self.width - 2 * self.margin , self.height - 2 * self.margin
+#            self.thickness
+    ToggleButton:
+        id: toggle
+        text: root.name
+        size_hint_y: 0.15
+        state: 'down'
+        on_state: root.set_drawing(self.state == 'down')
+
+    Image:
+        id: kivy_image
+        size_hint_y: 0.8
+#        size_hint_x: 1
+        background_normal: 'True'
+    Label:
+        id: stat_label
+        valign: 'top'
+        size_hint_y: 0.08
+    #    on_touch_down: root.drawing = (toggle.state == 'down')
+    #    on_press: print('jasd')
+        #self.toggle_drawing()
+    #    root.drawing = (toggle_object.state == 'down')
+
+#    GridLayout
+#        cols: 1
