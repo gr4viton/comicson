@@ -28,12 +28,23 @@
 #                on_release: camera.play = False
 
 <Menu>:
+    min_move: 0.05
+    scroll_distance: self.height * 0.3
+    direction: 'bottom'
     GridLayout:
         cols: 1
         Label:
             font_size: 30
-            text: 'RedDwarf Queez'
-            size_hint_y: 0.3
+            #'RedDwarf Queez'
+            text:
+                ('[b][color=ffffff]RE[/color][color=ff0000]D\nD[/color][color=ffffff]WARF[/color][/b]\n'
+                '[b][color=ac42dc]Queez[/color][/b]\n')
+            markup: True
+            valign: 'middle'
+            halign: 'center'
+            size: self.texture_size
+            line_height: 0.9
+#            size_hint_y: 0.3
     #        Label:
     #            text: 'Welcom to RDQ!'
     #        Label:
@@ -42,10 +53,11 @@
     #            text: 'To navigate through this app use swipes to sides. Try it out!'
         Button:
             text: 'xkcd'
+            size: sp(68), sp(62)
         Button:
             text: 'smbc'
 
-    ComicOutlineFrame:
+    ComicScreen:
 
 
 <CenteredAsyncImage>
@@ -55,36 +67,47 @@
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
 <ComicStrip>
+    cols:1
+    title: 'unitialized'
+    image_url: ''
+#    name: 'unitialized'
+    Label:
+        height: 10
+        text: root.title
 
     CenteredAsyncImage
-        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+        source: root.image_url
+#        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+
 <ComicStripSlideViewer>
-    CenteredAsyncImage:
-        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
-    CenteredAsyncImage:
-        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
-    CenteredAsyncImage:
-        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
-    CenteredAsyncImage:
-        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
-#        CenteredAsyncImage:
-#                source:'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+    min_move: 0.05
+    scroll_distance: self.width * 0.05
+    scroll_timeout: 400
+    loop: True
 
-<ComicOutlineFrame>
-    cols: 1
-    GridLayout:
-        cols:4
-        height: 10
-        Button:
-            text: 'prev'
-        Button:
-            text: 'rnd'
-        Button:
-            text: 'hide'
-        Button:
-            text: 'next'
+    ComicStrip:
+        name: '0'
+    ComicStrip
+        name: '1'
+    ComicStrip
+        name: '2'
 
-    ComicStripSlideViewer
+<ComicScreen>
+    GridLayout
+        cols: 1
+        GridLayout:
+            cols:4
+            height: 8
+            Button:
+                text: 'prev'
+            Button:
+                text: 'rnd'
+            Button:
+                text: 'hide'
+            Button:
+                text: 'next'
+
+        ComicStripSlideViewer
 
 
 <Page>:

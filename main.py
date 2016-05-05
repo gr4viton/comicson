@@ -25,6 +25,56 @@ from kivy.config import Config
 
 from kivy.uix.image import AsyncImage
 from kivy.uix.carousel import Carousel
+from kivy.uix.screenmanager import Screen, ScreenManager
+
+from requests import get
+from json import loads
+from re import search
+
+
+
+class ComicStrip(GridLayout):
+    def __init__(self, title, alt, num, image_url,**kwargs):
+        super(ComicStrip, self).__init__(**kwargs)
+        self.title = title
+        self.alt = alt
+        self.num = num
+        self.image_url = image_url
+
+        # self.CenteredAsyncImage.source = self.image_url
+
+
+
+class ComicDownloader:
+    def __init__(self):
+        pass
+
+    def get_strip(self, number):
+        info = self.download_json(number)
+        if not info:
+            print("Error: URL could not be retrieved")
+            return
+        title, alt, num = info['safe_title'], info['alt'], str(info['num'])
+        # image = num+search("\.([a-z])+$", info['img']).group()
+        image_url = info['img']
+        print(title, '|', alt, '|',num ,'|', image_url)
+        return ComicStrip(title, alt, num, image_url)
+
+    def download_json(self, comic_number):
+        if comic_number < 0:
+            return None
+        try:
+            if comic_number == 0:
+                return get("http://xkcd.com/info.0.json").json()
+            else:
+                return get("http://xkcd.com/{0}/info.0.json".
+                           format(comic_number)).json()
+        # except (requests.exceptions.ConnectionError, ValueError):
+        #     return None
+        except:
+            return None
+
+
 
 
 class Page(GridLayout):
@@ -43,9 +93,9 @@ class Menu(Carousel):
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
 
-class ComicOutlineFrame(GridLayout):
+class ComicScreen(Screen):
     # def __init__(self, **kwargs):
-    #     super(ComicOutlineFrame, self).__init__(**kwargs)
+    #     super(ComicScreen, self).__init__(**kwargs)
     pass
 
 class ComicStripSlideViewer(Carousel):
@@ -63,6 +113,9 @@ class RedDwarfQiz(GridLayout):
         super(RedDwarfQiz, self).__init__(**kwargs)
 
 
+        dn = ComicDownloader()
+        dn.get_strip(1100)
+
         exp = CenteredAsyncImage(
             source='http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
         self.layout_bottom.add_widget(exp)
@@ -71,7 +124,51 @@ class RedDwarfQiz(GridLayout):
         for x in range(0,10):
             car.add_widget(Page(index=x+1))
         self.layout_bottom.add_widget(car)
+        self.init_keyboard()
 
+
+
+
+    def init_keyboard(self):
+    #     Widget
+    #     self._keyboard = self.request_keyboard(
+    #         self._keyboard_closed, self, 'text')
+    #     if self._keyboard.widget:
+    #         # If it exists, this widget is a VKeyboard object which you can use
+    #         # to change the keyboard layout.
+    #         pass
+    #     self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        pass
+
+    def _keyboard_closed(self):
+        print('My keyboard have been closed!')
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        print('The key', keycode, 'have been pressed')
+        try:
+            print('- text :', text)
+        except:
+            print('cannot print text')
+        try:
+            print('- modif:', modifiers)
+        except:
+            print('cannot print modifiers')
+        # print(' - text is %r' % text)
+        # print(' - modifiers are %r' % modifiers)
+
+        # Keycode is composed of an integer + a string
+        # If we hit escape, release the keyboard
+        if keycode[1] == 'escape':
+            keyboard.release()
+
+        # Return True to accept the key. Otherwise, it will be used by
+        # the system.
+        return True
+
+    def on_touch(self, *args, **kwargs):
+        self.uniforms['touch'] = [float(i) for i in self.touch]
 
 class RedDwarfQizApp(App):
     def build(self):
