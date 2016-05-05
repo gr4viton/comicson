@@ -3,24 +3,121 @@
 
 <RedDwarfQiz>:
     cols: 2
-
+    layout_bottom: layout_bottom
     GridLayout:
         cols:1
+        Menu:
+            size_hint_y: 4
+        GridLayout:
+            id: layout_bottom
+            cols: 1
+#            Camera:
+#                id: camera
+#                resolution: 399, 299
+##
+#        BoxLayout:
+#            orientation: 'horizontal'
+#            size_hint_y: None
+#            height: '48dp'
+#            Button:
+#                text: 'Start'
+#                on_release: camera.play = True
+#
+#            Button:
+#                text: 'Stop'
+#                on_release: camera.play = False
+
+<Menu>:
+    GridLayout:
+        cols: 1
+        Label:
+            font_size: 30
+            text: 'RedDwarf Queez'
+            size_hint_y: 0.3
+    #        Label:
+    #            text: 'Welcom to RDQ!'
+    #        Label:
+    #            multiline: 'true'
+    #
+    #            text: 'To navigate through this app use swipes to sides. Try it out!'
         Button:
-            text: "start"
+            text: 'xkcd'
+        Button:
+            text: 'smbc'
+
+    ComicOutlineFrame:
+
+
+<CenteredAsyncImage>
+#    size: self.texture_size
+#    size_hint: None, None
+#    size_hint: 1,1
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+<ComicStrip>
+
+    CenteredAsyncImage
+        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+<ComicStripSlideViewer>
+    CenteredAsyncImage:
+        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+    CenteredAsyncImage:
+        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+    CenteredAsyncImage:
+        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+    CenteredAsyncImage:
+        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+#        CenteredAsyncImage:
+#                source:'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+
+<ComicOutlineFrame>
+    cols: 1
+    GridLayout:
+        cols:4
+        height: 10
+        Button:
+            text: 'prev'
+        Button:
+            text: 'rnd'
+        Button:
+            text: 'hide'
+        Button:
+            text: 'next'
+
+    ComicStripSlideViewer
+
+
+<Page>:
+    cols: 3
+    name: 'unitialized'
+    Label:
+        text: root.name
+    Label:
+        text: str(id(root))
+    Button
+        text: 'load(page 3)'
+        on_release:
+            carousel = root.parent.parent
+            carousel.load_slide(carousel.slides[2])
+    Button
+        text: 'prev'
+        on_release:
+            root.parent.parent.load_previous()
+    Button
+        text: 'next'
+        on_release:
+            root.parent.parent.load_next()
+
+
+
 
 <StepWidget>:
-    toggle_object: toggle
-    kivy_image: kivy_image
-    stat_label: stat_label
-#    layout_steps_height: 1500
-#    size_hint_y: 0.4
-    size_hint_y: None
-#    height: self.minimum_height * 4
-    height: 300
-#    size_hint_y: layout_steps_height / 400
-    size_hint_x: 1/3
     cols: 1
+    stat_label: stat_label
+    size_hint_y: None
+    height: 300
+
+    size_hint_x: 1/3
     padding: (2,2,2,2)
     spacing: (2,2)
     margin: 1

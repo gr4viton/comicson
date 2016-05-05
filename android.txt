@@ -1,0 +1,3 @@
+title=RedDwarfQueez
+author=cz.gr4viton
+orientation=portrait
