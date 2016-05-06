@@ -58,12 +58,13 @@
             text: 'smbc'
 
     ComicScreen:
+#        downloader: root.downloader
 
 
 <CenteredAsyncImage>
 #    size: self.texture_size
 #    size_hint: None, None
-#    size_hint: 1,1
+#    size_hint: 10,10
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
 <ComicStrip>
@@ -71,33 +72,48 @@
     title: 'unitialized'
     image_url: ''
 #    name: 'unitialized'
-    Label:
-        height: 10
-        text: root.title
+    GridLayout:
+        cols:2
+        padding: 5,5,5,5
+        title: root.title
+        num: root.num
+        size_hint: 1, None
+        height: 15
 
-    CenteredAsyncImage
-        source: root.image_url
+        Label:
+            size_hint: 0.2, 1
+            valign: 'middle'
+#            halign: 'center'
+            size: self.texture_size
+            text: str(root.num)
+        Label:
+            size_hint: 0.8, 1
+            valign: 'middle'
+            halign: 'center'
+            size: self.texture_size
+            text: root.title
+#
+#    CenteredAsyncImage
+#        source: root.image_url
 #        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
 
 <ComicStripSlideViewer>
     min_move: 0.05
     scroll_distance: self.width * 0.05
-    scroll_timeout: 400
+    scroll_timeout: 200
     loop: True
-
-    ComicStrip:
-        name: '0'
-    ComicStrip
-        name: '1'
-    ComicStrip
-        name: '2'
+#    buffer_count: 3
 
 <ComicScreen>
+    viewer: viewer
     GridLayout
         cols: 1
         GridLayout:
             cols:4
-            height: 8
+            height: 13
+            size_hint: 1, None
+            padding: 5,5,5,5
+
             Button:
                 text: 'prev'
             Button:
@@ -106,8 +122,13 @@
                 text: 'hide'
             Button:
                 text: 'next'
+                on_press: viewer.next_strip()
 
-        ComicStripSlideViewer
+        ComicStripSlideViewer:
+            id: viewer
+            parent: root
+#            downloader: root.downloader
+            buffer_count: 3
 
 
 <Page>:

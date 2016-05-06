@@ -31,34 +31,38 @@ from requests import get
 from json import loads
 from re import search
 
+# web scrapping inspiration from https://github.com/1995eaton/xkcd_downloader/blob/master/xkcd_downloader.py
 
-
-class ComicStrip(GridLayout):
-    def __init__(self, title, alt, num, image_url,**kwargs):
-        super(ComicStrip, self).__init__(**kwargs)
-        self.title = title
-        self.alt = alt
-        self.num = num
-        self.image_url = image_url
-
-        # self.CenteredAsyncImage.source = self.image_url
-
-
+import sys
 
 class ComicDownloader:
     def __init__(self):
+        self.comic_name = 'xkcd'
         pass
 
     def get_strip(self, number):
+        print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
         info = self.download_json(number)
         if not info:
             print("Error: URL could not be retrieved")
-            return
-        title, alt, num = info['safe_title'], info['alt'], str(info['num'])
-        # image = num+search("\.([a-z])+$", info['img']).group()
-        image_url = info['img']
-        print(title, '|', alt, '|',num ,'|', image_url)
-        return ComicStrip(title, alt, num, image_url)
+            return self.get_strip(number+1)
+        try:
+            title, alt, num = info['safe_title'], info['alt'], str(info['num'])
+            # image = num+search("\.([a-z])+$", info['img']).group()
+            image_url = info['img']
+            print(title, '|', alt, '|', num ,'|', image_url)
+            print(info)
+            return ComicStrip(title, alt, int(num), image_url)
+        # except AssertionError as ex:
+        #     # print("AssertionError ({0}): {1}".format(ex.errno, ex.strerror))
+        #     return self.get_strip(number+1)
+        except Exception as ex:
+            # print("Error({0}): {1}".format(ex.errno, ex.strerror))
+            print('Exception:', sys.exc_info()[0])
+            print('Could not get the [{}] comic number [{}]!'.format
+                  (self.comic_name, number))
+            return self.get_strip(number+1)
+
 
     def download_json(self, comic_number):
         if comic_number < 0:
@@ -71,8 +75,9 @@ class ComicDownloader:
                            format(comic_number)).json()
         # except (requests.exceptions.ConnectionError, ValueError):
         #     return None
-        except:
-            return None
+        except Exception:
+            print(Exception.args)
+            return self.download_json(comic_number+1)
 
 
 
@@ -86,22 +91,107 @@ class Page(GridLayout):
             self.name = 'page['+str(index)+']'
 
 
-class CenteredAsyncImage(AsyncImage):
-    pass
-
 class Menu(Carousel):
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
 
 class ComicScreen(Screen):
-    # def __init__(self, **kwargs):
-    #     super(ComicScreen, self).__init__(**kwargs)
-    pass
+    def __init__(self, **kwargs):
+        super(ComicScreen, self).__init__(**kwargs)
+        #
+        # self.downloader = ComicDownloader()
 
 class ComicStripSlideViewer(Carousel):
-    # def __init__(self, **kwargs):
-    #     super(ComicSlideViewer, self).__init__(**kwargs)
+
+    def __init__(self, **kwargs):
+        super(ComicStripSlideViewer, self).__init__(**kwargs)
+        # self.downloader = self.parent.downloader
+        # self.downloader = downloader
+        self.downloader = ComicDownloader()
+
+        # if not self.buffer_count:
+        self.buffer_count = 3
+        self.buffer_half_count = int(self.buffer_count/2)
+
+        self.buffer = []
+
+        buffer_count_range = range(self.buffer_count)
+
+        self.strip_number = 400
+
+        index_range = [self.strip_number + index - self.buffer_half_count
+                       for index in buffer_count_range]
+
+        def shift(l, n):
+            return l[n:] + l[:n]
+
+        strip_number_range = shift(index_range, self.buffer_half_count)
+
+        # for q in buffer_count_range:
+        #     item = GridLayout(cols=1)
+        #     self.buffer.append(item)
+        #     self.add_widget(item)
+
+        for (buffer_index, strip_number) in zip(buffer_count_range, strip_number_range):
+
+            comic_strip = self.downloader.get_strip(strip_number)
+            grid_layout = GridLayout(cols=1)
+            grid_layout.add_widget(comic_strip)
+
+            self.buffer.append(grid_layout)
+            self.add_widget(grid_layout)
+
+
+        # print(self.buffer)
+        self.comic_strip_index = 0
+        # self.last_comic_strip_index = 0
+
+    def load_next(self, mode='next', **kwargs):
+        super(ComicStripSlideViewer, self).load_next(**kwargs)
+        # self.next_strip()
+        print('loading next')
+        self.reload_buffer()
+
+    def next_strip(self):
+        self.load_next()
+
+    def reload_buffer(self):
+        self.comic_strip_index = self.index
+        if(self.comic_strip_index+1 == self.buffer_count):
+            actualize_index = 0
+        else:
+            actualize_index = self.comic_strip_index + 1
+
+        grid_layout = self.buffer[actualize_index]
+        strip_number = self.strip_number = self.strip_number+1
+        # strip_number = grid_layout.children[0].num + 1
+        grid_layout.clear_widgets()
+
+
+        comic_strip = self.downloader.get_strip(strip_number)
+        grid_layout.add_widget(comic_strip)
+
+
+
+    # def get_slide_container(self, slide):
+
+class ComicStrip(GridLayout):
+    def __init__(self, title, alt, num, image_url, **kwargs):
+        super(GridLayout, self).__init__(**kwargs)
+        self.title = title
+        self.alt = alt
+        self.num = num
+        self.image_url = image_url
+
+        im = CenteredAsyncImage(source = self.image_url)
+        # im = CenteredAsyncImage(source = 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
+        self.add_widget(im)
+
+    # pass
+
+class CenteredAsyncImage(AsyncImage):
     pass
+
 
 class RedDwarfQiz(GridLayout):
     gl_left = ObjectProperty()
@@ -112,9 +202,9 @@ class RedDwarfQiz(GridLayout):
         # make sure we aren't overriding any important functionality
         super(RedDwarfQiz, self).__init__(**kwargs)
 
-
-        dn = ComicDownloader()
-        dn.get_strip(1100)
+        #
+        # dn = ComicDownloader()
+        # dn.get_strip(1100)
 
         exp = CenteredAsyncImage(
             source='http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
