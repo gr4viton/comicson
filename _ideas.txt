@@ -1,0 +1,64 @@
+
+- za 5 kaček plná verze
+
+- resp xml - udělat na cokoliv kdokoliv - spíš jenom já
+- sounds 
+
+
+[] logo & icon 
+- redraw of the Queeg with tongue out and floppy ears
+- fotku s Hčkem na čele dodělanou overlayem
+
+[] get data from
+- vykořenit http://www.cervenytrpaslik.cz/scenare/CZ-18-3_Posledni_den.htm
+- titulky.cz
+[] get data of
+- wars of thrones
+- red dwarf
+
+[] common question generated from database
+ [text]
+ - question 
+ [grouped radio buttons]
+  -- possible answers (common to right answer)
+ [image - semi-random]
+
+[] type of answers
+ - multiple choice
+ - textual input
+  -- voice input
+ - noise input
+ - drawing contour
+ - color selection
+ 
+
+
+[] database insides
+title of art-piece
+
+type of question
+ - visual (what was in scene, what was he doing)
+ - name (who said it, city / property name, what was the movie title)
+ - textual (what does he said)
+ - contextual (what emotion, cause of effect)
+ - statistical (who was across the whole series)
+
+Taxonomy classification 
+ - Domain, Kingdom, Phylum, Class, Order, Family, Genus, Speies
+category
+ - movie, series, -season scene
+
+keywords
+ - 
+tags
+ - happy, sad, emotional, romantic..
+
+
+- match against 
+ -- other online people (multi language)
+ -- AI - learned NN of different levels
+  --- AI would learn from users
+
+- users would create new questions
+ -- automatic random user new question verification
+
