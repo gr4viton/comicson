@@ -68,15 +68,28 @@
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
 <ComicStrip>
+#    parent: parent
+    id: parent
     cols:1
     title: 'unitialized'
     image_url: ''
 #    name: 'unitialized'
+    num: 0
+
+    margin: 1
+    color: .08,.16 , .24
+    canvas.before:
+        Color:
+            rgb: self.color
+        Rectangle:
+            pos: self.x + self.margin, self.y + self.margin + 1
+            size: self.width - 2 * self.margin , self.height - 2 * self.margin
+
     GridLayout:
         cols:2
         padding: 5,5,5,5
-        title: root.title
-        num: root.num
+#        title: root.title
+#        num: root.num
         size_hint: 1, None
         height: 15
 
@@ -85,17 +98,18 @@
             valign: 'middle'
 #            halign: 'center'
             size: self.texture_size
-            text: str(root.num)
+            text: str(parent.num)
         Label:
             size_hint: 0.8, 1
             valign: 'middle'
             halign: 'center'
             size: self.texture_size
-            text: root.title
+            text: parent.title
+
 #
-#    CenteredAsyncImage
-#        source: root.image_url
-#        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+##    CenteredAsyncImage
+##        source: root.image_url
+##        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
 
 <ComicStripSlideViewer>
     min_move: 0.05

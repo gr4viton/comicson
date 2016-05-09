@@ -32,7 +32,7 @@ from json import loads
 from re import search
 
 # web scrapping inspiration from https://github.com/1995eaton/xkcd_downloader/blob/master/xkcd_downloader.py
-
+import time
 import sys
 
 class ComicDownloader:
@@ -43,16 +43,20 @@ class ComicDownloader:
     def get_strip(self, number):
         print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
         info = self.download_json(number)
-        if not info:
+        print(info)
+        if info is None:
             print("Error: URL could not be retrieved")
             return self.get_strip(number+1)
         try:
-            title, alt, num = info['safe_title'], info['alt'], str(info['num'])
+            # print('here')
+            title, alt, num = (info['safe_title'], info['alt'], str(info['num']))
             # image = num+search("\.([a-z])+$", info['img']).group()
             image_url = info['img']
             print(title, '|', alt, '|', num ,'|', image_url)
-            print(info)
+            # print(info)
+            # print('here')
             return ComicStrip(title, alt, int(num), image_url)
+            # print('here2')
         # except AssertionError as ex:
         #     # print("AssertionError ({0}): {1}".format(ex.errno, ex.strerror))
         #     return self.get_strip(number+1)
@@ -61,6 +65,8 @@ class ComicDownloader:
             print('Exception:', sys.exc_info()[0])
             print('Could not get the [{}] comic number [{}]!'.format
                   (self.comic_name, number))
+
+            time.sleep(5)
             return self.get_strip(number+1)
 
 
@@ -117,7 +123,8 @@ class ComicStripSlideViewer(Carousel):
 
         buffer_count_range = range(self.buffer_count)
 
-        self.strip_number = 400
+        self.strip_number = 403
+        self.strip_number = 390
 
         index_range = [self.strip_number + index - self.buffer_half_count
                        for index in buffer_count_range]
@@ -127,6 +134,8 @@ class ComicStripSlideViewer(Carousel):
 
         strip_number_range = shift(index_range, self.buffer_half_count)
 
+
+        # time.sleep(2)
         # for q in buffer_count_range:
         #     item = GridLayout(cols=1)
         #     self.buffer.append(item)
@@ -182,6 +191,7 @@ class ComicStrip(GridLayout):
         self.alt = alt
         self.num = num
         self.image_url = image_url
+        # print('hereeres')
 
         im = CenteredAsyncImage(source = self.image_url)
         # im = CenteredAsyncImage(source = 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
@@ -298,3 +308,6 @@ if __name__ == '__main__':
 # todo: xml loading for language extension
 # todo: xml loading for individual questions and answers
 
+# todo: link to explanatory site
+# todo: xkcd what if
+# todo: stderr > file
