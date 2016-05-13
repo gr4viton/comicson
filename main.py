@@ -55,7 +55,8 @@ class ComicDownloader:
             print(title, '|', alt, '|', num ,'|', image_url)
             # print(info)
             # print('here')
-            return ComicStrip(title, alt, int(num), image_url)
+            a = ComicStrip(title, alt, int(num), image_url)
+            return a
             # print('here2')
         # except AssertionError as ex:
         #     # print("AssertionError ({0}): {1}".format(ex.errno, ex.strerror))

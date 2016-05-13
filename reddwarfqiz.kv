@@ -67,6 +67,62 @@
 #    size_hint: 10,10
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
+#<ComicStrip2>
+#    cols: 1
+#    id:parent
+#    title: 'unitialized'
+#    image_url: ''
+##    name: 'unitialized'
+#    num: 0
+#
+#    margin: 1
+#    color: .08,.16 , .24
+#    canvas.before:
+#        Color:
+#            rgb: self.color
+#        Rectangle:
+#            pos: self.x + self.margin, self.y + self.margin + 1
+#            size: self.width - 2 * self.margin , self.height - 2 * self.margin
+#
+#
+#    GridLayout:
+#        cols:2
+#        padding: 5,5,5,5
+##        title: root.title
+##        num: root.num
+#        size_hint: 1, None
+#        height: 15
+#
+#        GridLayout
+#            cols:1
+##
+#            margin: 1
+#            color: .08,.11 , .24
+#            canvas.before:
+#                Color:
+#                    rgb: self.color
+#                Rectangle:
+#                    pos: self.x + self.margin, self.y + self.margin + 1
+#                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
+#
+#            Label:
+#                size_hint: 0.2, 1
+#                valign: 'middle'
+#    #            halign: 'center'
+#                size: self.texture_size
+#                text: str(parent.num)
+#        GridLayout
+#            cols:1
+#
+#            color2: .08,.11 , .24
+#            margin: 1
+#            canvas.before:
+#                Color:
+#                    rgb: self.color2
+#                Rectangle:
+#                    pos: self.x + self.margin, self.y + self.margin + 1
+#                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
+
 <ComicStrip>
 #    parent: parent
     id: parent
@@ -75,6 +131,7 @@
     image_url: ''
 #    name: 'unitialized'
     num: 0
+    size_hint: 1, 1
 
     margin: 1
     color: .08,.16 , .24
@@ -92,19 +149,43 @@
 #        num: root.num
         size_hint: 1, None
         height: 15
+        GridLayout
+            cols:1
 
-        Label:
-            size_hint: 0.2, 1
-            valign: 'middle'
-#            halign: 'center'
-            size: self.texture_size
-            text: str(parent.num)
-        Label:
-            size_hint: 0.8, 1
-            valign: 'middle'
-            halign: 'center'
-            size: self.texture_size
-            text: parent.title
+            color2: .08,.91 , .24
+            margin: 1
+            canvas.before:
+                Color:
+                    rgb: self.color2
+                Rectangle:
+                    pos: self.x + self.margin, self.y + self.margin + 1
+                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
+
+            Label:
+                size_hint: 0.2, 1
+                valign: 'middle'
+    #            halign: 'center'
+                size: self.texture_size
+                text: str(parent.num)
+        GridLayout
+            cols:1
+
+            color2: .28,.91 , .24
+            margin: 1
+            canvas.before:
+                Color:
+                    rgb: self.color2
+                Rectangle:
+                    pos: self.x + self.margin, self.y + self.margin + 1
+                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
+
+            Label:
+                size_hint: 0.8, 1
+                valign: 'middle'
+                halign: 'center'
+                size: self.texture_size
+                text: parent.title
+
 
 #
 ##    CenteredAsyncImage
