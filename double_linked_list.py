@@ -1,8 +1,8 @@
 
 class Node:
 
-    # Constructor to initialize data
-    # If data is not given by user,its taken as None
+    # Constructor to initialize id
+    # If id is not given by user,its taken as None
     def __init__(self, data=None, next=None, prev=None):
         self.data = data
         self.next = next

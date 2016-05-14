@@ -66,7 +66,7 @@ class ComicDownloader:
             Logger.info('Results of url request:')
             [Logger.info(key) for key in results.keys()]
         else:
-            Logger.info('No data result for request!')
+            Logger.info('No id result for request!')
 
         # key = 'img'
         # Logger.info(key + ' : ' + results[key])
@@ -348,7 +348,7 @@ class RedDwarfQiz(GridLayout):
         p = CustomPopup(title = url)
 
         req = UrlRequest(
-            # 'http://api.openweathermap.org/data/2.5/weather?q=Paris,fr',
+            # 'http://api.openweathermap.org/id/2.5/weather?q=Paris,fr',
             url,
             self.process_it)
 
