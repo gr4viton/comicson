@@ -86,12 +86,15 @@ class ComicStripSlideViewer(Carousel):
         # return
         # self.downloader = ComicDownloader()
 
+
+
         strip_number = 390
-        size = 30
+        size = 3
         self.downloader = cd.ComicDownloader(self)
 
         self.sb = StripBuffer(current_id=strip_number, size=size,
                               downloader=self.downloader)
+        self.last_strip = self.sb.active
         print(self.sb)
 
         # print(dir(AnimationTransition))
@@ -115,34 +118,42 @@ class ComicStripSlideViewer(Carousel):
         #     sb.prev_strip()
         #     print(sb)
 
+    def load_next_strip(self):
+        print('Loading next strip')
+        self.sb.next_strip()
+        self.last_strip = self.sb.active
+
+    def load_prev_strip(self):
+        print('Loading previous strip')
+        self.sb.prev_strip()
+        self.last_strip = self.sb.active
 
     def load_next(self, mode='next', **kwargs):
         super(ComicStripSlideViewer, self).load_next(mode=mode,**kwargs)
-        # print('Loading next strip')
-        # self.sb.next_strip()
         if mode == 'next':
-            print('Loading next strip')
-            self.sb.next_strip()
+            self.load_next_strip()
         else:
-            print('Loading previous strip')
-            self.sb.prev_strip()
+            self.load_prev_strip()
 
-    # def load_previous(self, **kwargs):
-    #     super(ComicStripSlideViewer, self).load_previous(**kwargs)
-    #     print('Loading previous strip')
-    #     self.sb.prev_strip()
-
-    def on_sliding_end(self):
+    def on_sliding_end(self, current_slide):
         '''
         happens at a time the user slides to a new slide
         = next or previous
         (or after a time interval)
         '''
-
+        print('yes')
+        # print('current_slide',current_slide)
+        # print('self.last_strip', self.last_strip)
+        # print('self.last_strip.next', self.last_strip.next)
+        if self.last_strip.next.id == current_slide.num:
+            # slided front
+            self.load_next_strip()
+        elif self.last_strip.prev.id == current_slide.num:
+            # slided back
+            self.load_prev_strip()
         # cur = buffer[cur_id]
-        self.update_strip_buffer()
+        # self.update_strip_buffer()
 
-        pass
     #
     # def update_strip_buffer(self):
     #     # for strip in self.buffer:

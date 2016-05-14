@@ -93,7 +93,6 @@
             pos: self.x + self.margin, self.y + self.margin + 1
             size: self.width - 2 * self.margin , self.height - 2 * self.margin
 
-
     GridLayout:
         cols:2
         padding: 5,5,5,5
@@ -176,24 +175,39 @@
     loop: True
 #    buffer_count: 3
 
+#    on_index: print("slide #{}".format(args[1]))
+#    on_current_slide: print(args[1].title)
+    on_current_slide: root.on_sliding_end(args[1])
+
+#    on_touch_up: root.popup_alt()
+#    on_state: root.popup_alt()
+
 <ComicScreen>
     viewer: viewer
+    small: 0.1
+    big: 0.35
     GridLayout
         cols: 1
         GridLayout:
-            cols:4
+            cols:5
             height: 13
             size_hint: 1, 0.1
             padding: 5,5,5,5
-
             Button:
+                size_hint_x: root.big
                 text: 'prev'
                 on_press: viewer.prev_strip()
             Button:
+                size_hint_x: root.small
                 text: 'rnd'
             Button:
-                text: 'hide'
+                size_hint_x: root.small
+                text: 'save'
             Button:
+                size_hint_x: root.small
+                text: 'set'
+            Button:
+                size_hint_x: root.big
                 text: 'next'
                 on_press: viewer.next_strip()
 

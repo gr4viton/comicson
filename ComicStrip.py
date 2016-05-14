@@ -53,7 +53,7 @@ class ComicStrip(GridLayout):
     image_url = StringProperty('')
     num = NumericProperty('-')
 
-    def popup_alt(self):
+    def popup_alt(self, whatever=None):
         p = CustomPopup(title=self.alt)
         p.open()
 
