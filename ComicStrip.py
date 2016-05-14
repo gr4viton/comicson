@@ -22,6 +22,7 @@ from kivy.config import Config
 from kivy.uix.popup import Popup
 
 from kivy.uix.image import AsyncImage
+from kivy.logger import Logger
 
 class CustomPopup(Popup):
     pass
@@ -58,7 +59,7 @@ class ComicStrip(GridLayout):
 
     def __init__(self, results, **kwargs):
         super(GridLayout, self).__init__(**kwargs)
-        self.update_data(results)
+        self.update_data_from_result(results)
         # print('hereeres')
         # self.im_widget_layout(self.add_widget())
 
@@ -72,8 +73,20 @@ class ComicStrip(GridLayout):
     #
     #     self.im_widget_layout = CenteredAsyncImage(source = self.image_url,
     #                             on_double_tap=CustomPopup(title=self.alt).open)
+    def update_data_from_result_async(self, req, results):
+        if results is not None:
+            Logger.info('Async update from results of url request:')
+            [Logger.info(key) for key in results.keys()]
+            self.update_data_from_result(results)
+            return self.results
+        else:
+            Logger.info('Async update from results not possible- results is None!')
+            return None
 
-    def update_data(self, results):
+
+
+
+    def update_data_from_result(self, results):
         self.results = results
 
         self.title = self.results['safe_title']

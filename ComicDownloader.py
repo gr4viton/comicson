@@ -19,35 +19,16 @@ class ComicDownloader(object):
 
     def process_request(self, req, results):
 
-        print('je')
-
         if results is not None:
             Logger.info('Results of url request:')
             [Logger.info(key) for key in results.keys()]
         else:
             Logger.info('No id result for request!')
 
-        # key = 'img'
-        # Logger.info(key + ' : ' + results[key])
-
-        # [print(key) for key in results.keys()]
-        # what = 'year'
-        # if what in results.keys():
-        #     print(results.get(what))
-
-        # title = 'Nightmares'
-        # alt = 'you dont sleep'
-        # num = 666
-        # image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
-
-        # self.title = results['title']
-        # self., results['alt'], results['num'], results['image_url'])
         self.results = results
 
-        # print(title, alt, num, image_url)
-        # return title, alt, num, image_url
-        # req.is_finished = True
-        return True
+        return self.results
+
 
     def create_strip_widget(self, number):
         # if self.get_strip_widget()
@@ -65,7 +46,11 @@ class ComicDownloader(object):
     #     get_strip_data
     #     return ComicStrip(results)
 
-    def get_strip_data(self, number):
+    def get_strip_data(self, number, process_request=None, wait=True):
+        if process_request is not None:
+            this_process_request = process_request
+        else:
+            this_process_request = self.process_request
 
         if number < 0:
             url = None
@@ -77,14 +62,15 @@ class ComicDownloader(object):
             url = "http://xkcd.com/{0}/info.0.json".format(number)
 
         print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
-        req = UrlRequest(url, self.process_request)
+        req = UrlRequest(url, this_process_request)
 
-        while not req.is_finished:
-            # time.sleep(1)
-            Clock.tick()
-            pass
+        if wait==True:
+            while not req.is_finished:
+                # time.sleep(1)
+                Clock.tick()
+                pass
 
-        print(req._result)
+            print(req._result)
 
         return self.results
 
