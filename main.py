@@ -221,65 +221,6 @@ class RedDwarfQiz(GridLayout):
         # make sure we aren't overriding any important functionality
         super(RedDwarfQiz, self).__init__(**kwargs)
 
-        # data_dir = getattr(self, 'user_data_dir') #get a writable path to save the file
-        # store = JsonStore(join(data_dir, 'kivy_user.json'))
-
-
-        # store = JsonStore('kivy_user.json')
-        # store.put('score', best=50)
-
-        #
-        # dn = ComicDownloader()
-        # dn.get_strip(1100)
-        
-        exp = CenteredAsyncImage(
-            source='http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
-
-
-        self.layout_bottom.add_widget(exp)
-
-
-
-        car = Carousel()
-        for x in range(0,10):
-            car.add_widget(Page(index=x+1))
-
-
-        self.layout_bottom.add_widget(car)
-        # req = UrlRequest(url, on_success, on_redirect, on_failure, on_error,
-        #                  on_progress, req_body, req_headers, chunk_size,
-        #                  timeout, method, decode, debug, file_path, ca_file,
-        #                  verify)
-
-
-        # store = JsonStore('http://dynamic.xkcd.com/api-0/jsonp/comic/123')
-        # return
-
-        # id = 123
-        # url = "http://xkcd.com/{0}/info.0.json".format(id)
-        # print(url)
-        # p = CustomPopup(title = url)
-        #
-        # req = UrlRequest(
-        #     # 'http://api.openweathermap.org/id/2.5/weather?q=Paris,fr',
-        #     url,
-        #     self.process_it)
-        #
-        # p.open()
-        # ____________________________________________________
-        # store = JsonStore(url)
-        # # a = store.get('title')
-        # print('here')
-        # [print(key) for key in store.keys()]
-        # what = 'year'
-        # if store.exists(what):
-        #     print(store.get(what))
-
-        # a = store.get('num')
-        # print(id)
-
-        # return
-        # self.init_keyboard()
 
 
 
