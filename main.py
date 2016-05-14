@@ -29,7 +29,9 @@ from kivy.uix.image import AsyncImage
 from kivy.uix.carousel import Carousel
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-# from kivy.uix.popup import Popup
+from kivy.uix.popup import Popup
+
+from kivy.logger import Logger
 
 # is not working with - python2 in android only
 # from requests import get
@@ -42,14 +44,14 @@ from kivy.storage.dictstore import DictStore
 from kivy.storage.jsonstore import JsonStore
 from os.path import join
 
-# from kivy.network.urlrequest import UrlRequest
+from kivy.network.urlrequest import UrlRequest
 
 # web scrapping inspiration from https://github.com/1995eaton/xkcd_downloader/blob/master/xkcd_downloader.py
 import time
 import sys
 
-# class CustomPopup(Popup):
-#     pass
+class CustomPopup(Popup):
+    pass
 
 class ComicDownloader:
     def __init__(self):
@@ -245,15 +247,24 @@ class RedDwarfQiz(GridLayout):
     def process_it(self, req, results):
         # for key, value in results['weather'][0].items():
         #     print(key, ': ', value)
-        print('here')
-        [print(key) for key in results.keys()]
-        what = 'year'
-        if what in results.keys():
-            print(results.get(what))
+        Logger.info('%'*42+'here')
+        if results is not None:
+            Logger.info('%'*42 + 'yes')
+            [Logger.info(key) for key in results.keys()]
+        else:
+            Logger.info('%'*42 +'no')
+        key = 'img'
+        Logger.info(key + ' : ' + results[key])
 
-
-        p = CustomPopup(title = results['safe_title'])
-        p.open()
+        # [print(key) for key in results.keys()]
+        # what = 'year'
+        # if what in results.keys():
+        #     print(results.get(what))
+        pass
+    #
+    #
+    #     p = CustomPopup(title = results['safe_title'])
+    #     p.open()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -261,9 +272,10 @@ class RedDwarfQiz(GridLayout):
 
         # data_dir = getattr(self, 'user_data_dir') #get a writable path to save the file
         # store = JsonStore(join(data_dir, 'kivy_user.json'))
-        store = JsonStore('kivy_user.json')
 
-        store.put('score', best=50)
+
+        # store = JsonStore('kivy_user.json')
+        # store.put('score', best=50)
 
         #
         # dn = ComicDownloader()
@@ -273,6 +285,16 @@ class RedDwarfQiz(GridLayout):
             source='http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
 
 
+        self.layout_bottom.add_widget(exp)
+
+
+
+        car = Carousel()
+        for x in range(0,10):
+            car.add_widget(Page(index=x+1))
+
+
+        self.layout_bottom.add_widget(car)
         # req = UrlRequest(url, on_success, on_redirect, on_failure, on_error,
         #                  on_progress, req_body, req_headers, chunk_size,
         #                  timeout, method, decode, debug, file_path, ca_file,
@@ -280,21 +302,19 @@ class RedDwarfQiz(GridLayout):
 
 
         # store = JsonStore('http://dynamic.xkcd.com/api-0/jsonp/comic/123')
-        return
+        # return
 
         id = 123
         url = "http://xkcd.com/{0}/info.0.json".format(id)
         print(url)
         p = CustomPopup(title = url)
-        p.open()
 
-        return
         req = UrlRequest(
             # 'http://api.openweathermap.org/data/2.5/weather?q=Paris,fr',
             url,
             self.process_it)
 
-
+        p.open()
         # ____________________________________________________
         # store = JsonStore(url)
         # # a = store.get('title')
@@ -307,16 +327,6 @@ class RedDwarfQiz(GridLayout):
         # a = store.get('num')
         # print(id)
 
-        self.layout_bottom.add_widget(exp)
-
-
-
-        car = Carousel()
-        for x in range(0,10):
-            car.add_widget(Page(index=x+1))
-
-
-        self.layout_bottom.add_widget(car)
         # return
         # self.init_keyboard()
 
