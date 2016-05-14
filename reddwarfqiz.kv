@@ -162,8 +162,9 @@
 #    buffer_count: 3
 
 #    on_index: print("slide #{}".format(args[1]))
+    on_index: root.on_sliding_end_index(args[1])
 #    on_current_slide: print(args[1].title)
-    on_current_slide: root.on_sliding_end(args[1])
+#    on_current_slide: root.on_sliding_end_current_slide(args[1])
 
 #    on_touch_up: root.popup_alt()
 #    on_state: root.popup_alt()
@@ -182,7 +183,7 @@
             Button:
                 size_hint_x: root.big
                 text: 'prev'
-                on_press: viewer.prev_strip()
+                on_press: viewer.prev_strip(from_gui=True)
             Button:
                 size_hint_x: root.small
                 text: 'rnd'
@@ -195,7 +196,7 @@
             Button:
                 size_hint_x: root.big
                 text: 'next'
-                on_press: viewer.next_strip()
+                on_press: viewer.next_strip(from_gui=True)
 
         ComicStripSlideViewer:
             id: viewer

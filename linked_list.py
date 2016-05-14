@@ -120,6 +120,7 @@ class StripBuffer(object):
 
         # the new tail_front strip - to reload
         self.tail_front.update_data(new_front_id )
+        print(self)
 
     def prev_strip(self):
         new_back_id = self.active.id - 1 - self.side_count
@@ -130,6 +131,7 @@ class StripBuffer(object):
 
         # the new tail_back strip - to reload
         self.tail_back.update_data(new_back_id)
+        print(self)
 
 
     def __str__(self):

@@ -32,6 +32,7 @@ from kivy.uix.popup import Popup
 
 from kivy.logger import Logger
 from kivy.animation import AnimationTransition
+from random import random
 
 # is not working with - python2 in android only
 # from requests import get
@@ -66,35 +67,36 @@ class Page(GridLayout):
 class Menu(Carousel):
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
-        # Menu.next_slide()
 
-        self.load_next()
+        # self.load_next()
 
 class ComicScreen(Screen):
     def __init__(self, **kwargs):
         super(ComicScreen, self).__init__(**kwargs)
 
-        #
-        # self.downloader = ComicDownloader()
+
 
 class ComicStripSlideViewer(Carousel):
+    ignore_on_slide_end_count = 0
 
-    def __init__(self, **kwargs):
+    def __init__(self, strip_number=None, size=3, **kwargs):
         super(ComicStripSlideViewer, self).__init__(**kwargs)
         # self.downloader = self.parent.downloader
         # self.downloader = downloader
         # return
         # self.downloader = ComicDownloader()
+        if strip_number == None:
+            strip_number = int(random()*1600)
 
 
-
-        strip_number = 390
-        size = 3
+        # strip_number = 390
+        # size = 3
         self.downloader = cd.ComicDownloader(self)
 
         self.sb = StripBuffer(current_id=strip_number, size=size,
                               downloader=self.downloader)
-        self.last_strip = self.sb.active
+
+        self.last_index = self.index
         print(self.sb)
 
         # print(dir(AnimationTransition))
@@ -118,28 +120,70 @@ class ComicStripSlideViewer(Carousel):
         #     sb.prev_strip()
         #     print(sb)
 
-    def load_next_strip(self):
-        print('Loading next strip')
-        self.sb.next_strip()
-        self.last_strip = self.sb.active
+    def load_next_strip(self, mode='next'):
+
+        if mode == 'next':
+            print('Loading next strip')
+            self.sb.next_strip()
+            self.last_strip = self.sb.active
+            self.last_index = self.index
+        elif mode == 'prev':
+            print('Loading previous strip')
+            self.sb.prev_strip()
+            self.last_strip = self.sb.active
+            self.last_index = self.index
 
     def load_prev_strip(self):
-        print('Loading previous strip')
-        self.sb.prev_strip()
-        self.last_strip = self.sb.active
+        self.load_next_strip(mode='prev')
+    #
+    # def load_prev_strip(self):
+    #     print('Loading previous strip')
+    #     self.sb.prev_strip()
+    #     self.last_strip = self.sb.active
+    #     self.last_index = self.index
 
     def load_next(self, mode='next', **kwargs):
         super(ComicStripSlideViewer, self).load_next(mode=mode,**kwargs)
-        if mode == 'next':
+        # self.load_next_strip(mode=mode)
+
+
+
+    def on_sliding_end_index(self, current_index):
+        '''
+        called at a time the user slides to a new slide = next or previous
+        (after some time latency interval)
+        '''
+        # if self.ignore_on_slide_end_count != 0:
+        #     self.ignore_on_slide_end_count = 0
+        #     return
+        tail_index = len(self.slides)-1
+        print('yes')
+        print('current_index', current_index)
+        print('self.last_index', self.last_index)
+        print('tail_index', tail_index)
+
+        if current_index == 0 and self.last_index == tail_index:
+            # slided front
             self.load_next_strip()
-        else:
+        elif current_index == tail_index and self.last_index == 0:
+            # slided back
+            self.load_prev_strip()
+        elif self.last_index < current_index:
+            # slided front
+            self.load_next_strip()
+        elif self.last_index > current_index:
+            # slided back
             self.load_prev_strip()
 
-    def on_sliding_end(self, current_slide):
+        if self.slides[current_index].num != self.sb.active.id:
+            print('The active strip id {}does not match the current index num {}'.format(
+            self.sb.active.id,self.slides[current_index].num
+            ))
+
+    def on_sliding_end_current_slide(self, current_slide):
         '''
-        happens at a time the user slides to a new slide
-        = next or previous
-        (or after a time interval)
+        called at a time the user slides to a new slide = next or previous
+        (after some time latency  interval)
         '''
         print('yes')
         # print('current_slide',current_slide)
@@ -151,8 +195,6 @@ class ComicStripSlideViewer(Carousel):
         elif self.last_strip.prev.id == current_slide.num:
             # slided back
             self.load_prev_strip()
-        # cur = buffer[cur_id]
-        # self.update_strip_buffer()
 
     #
     # def update_strip_buffer(self):
@@ -160,12 +202,14 @@ class ComicStripSlideViewer(Carousel):
     #     #     if
     #     pass
 
-    def next_strip(self):
+    def next_strip(self, from_gui=False):
         self.load_next()
+        # self.ignore_on_slide_end_count +=1
 
-    def prev_strip(self):
+    def prev_strip(self, from_gui=False):
         # self.load_previous()
         self.load_next(mode='prev')
+        # self.ignore_on_slide_end_count +=1
 
     # def reload_buffer(self):
     #     self.comic_strip_index = self.index
