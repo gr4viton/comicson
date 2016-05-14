@@ -1,4 +1,5 @@
 import sys
+from main import ComicDownloader
 
 class Node(object):
     count = 0
@@ -6,15 +7,13 @@ class Node(object):
     data = None
     next = None
     prev = None
+    downloader = ComicDownloader()
 
     def __init__(self, id, next=None, prev=None):
         Node.count += 1
         self.update_data(id)
         self.next = next
         self.prev = prev
-
-
-        # self.data = comic_strip(self.id)
 
     def add_next_on_tail(self):
         new_id = self.id + 1
@@ -34,11 +33,15 @@ class Node(object):
 
     def update_data(self, id):
         self.id = id
-        self.data = 'name'+str(id)
-        # self.data = comic_strip(self.id)
+        # self.data = 'name'+str(id)
+        self.data = self.downloader.get_strip(self.id)
 
     def __str__(self):
-        return '[id={0:>5}, data={1:>12}]'.format(self.id, self.data)
+        txt = '['
+        txt += 'id={0:>5},'.format(self.id)
+        txt += 'data={}'.format(self.data)
+        txt += ']'
+        return txt
         # return "id=\t{}, data=\t[{0:<16}]".format(self.id, self.data)
 
 class StripBuffer(object):

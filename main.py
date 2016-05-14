@@ -50,6 +50,10 @@ from kivy.network.urlrequest import UrlRequest
 import time
 import sys
 
+# from linked_list import StripBuffer
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 class CustomPopup(Popup):
     pass
 
@@ -257,6 +261,10 @@ class ComicStripSlideViewer(Carousel):
     # def get_slide_container(self, slide):
 
 class ComicStrip(GridLayout):
+    num = -1
+    alt = ''
+    title = ''
+    image_url = ''
     def __init__(self, title, alt, num, image_url, **kwargs):
         super(GridLayout, self).__init__(**kwargs)
         self.title = title
@@ -271,6 +279,14 @@ class ComicStrip(GridLayout):
         # im = CenteredAsyncImage(source = 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
         self.add_widget(im)
 
+    def __str__(self):
+        txt = '['
+        txt += 'num={0:>5},'.format(self.num)
+        txt += 'title={0:>14},'.format(self.title)
+        # txt += 'alt={0:>5},'.format(self.alt)
+        txt += 'image_url={0:>20},'.format(self.image_url)
+        txt += ']'
+        return txt
     # pass
 
 class CenteredAsyncImage(AsyncImage):
