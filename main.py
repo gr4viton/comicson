@@ -25,7 +25,6 @@ from kivy.properties import ObjectProperty, StringProperty, NumericProperty
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.config import Config
 
-from kivy.uix.image import AsyncImage
 from kivy.uix.carousel import Carousel
 from kivy.uix.screenmanager import Screen, ScreenManager
 
@@ -44,102 +43,14 @@ from kivy.storage.dictstore import DictStore
 from kivy.storage.jsonstore import JsonStore
 from os.path import join
 
-from kivy.network.urlrequest import UrlRequest
+from ComicStrip import CenteredAsyncImage
 
-# web scrapping inspiration from https://github.com/1995eaton/xkcd_downloader/blob/master/xkcd_downloader.py
-import time
-import sys
-
-# from linked_list import StripBuffer
+import ComicDownloader as cd
+from linked_list import StripBuffer
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-class CustomPopup(Popup):
-    pass
 
-class ComicDownloader:
-    def __init__(self):
-        self.comic_name = 'xkcd'
-        pass
-
-    def process_request(self, req, results):
-
-        print('je')
-
-        if results is not None:
-            Logger.info('Results of url request:')
-            [Logger.info(key) for key in results.keys()]
-        else:
-            Logger.info('No id result for request!')
-
-        # key = 'img'
-        # Logger.info(key + ' : ' + results[key])
-
-        # [print(key) for key in results.keys()]
-        # what = 'year'
-        # if what in results.keys():
-        #     print(results.get(what))
-
-        # title = 'Nightmares'
-        # alt = 'you dont sleep'
-        # num = 666
-        # image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
-
-        # self.title = results['title']
-        # self., results['alt'], results['num'], results['image_url'])
-        self.results = results
-
-        # print(title, alt, num, image_url)
-        # return title, alt, num, image_url
-        # req.is_finished = True
-        return True
-
-    def get_strip(self, number):
-
-        # title = 'Nightmares'
-        # alt = 'you dont sleep'
-        # num = 666
-        # image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
-        #
-        # return ComicStrip(title, alt, int(num), image_url)
-
-
-        if number < 0:
-            url = None
-            Logger.info('Cannot load negative comic number!')
-            return None
-        elif number == 0:
-            url = "http://xkcd.com/info.0.json"
-        else:
-            url = "http://xkcd.com/{0}/info.0.json".format(number)
-
-        # url = "http://xkcd.com/{0}/info.0.json".format(id)
-        # print(url)
-        # p = CustomPopup(title = url)
-
-        print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
-        req = UrlRequest(url, self.process_request)
-
-        while not req.is_finished:
-            time.sleep(1)
-            Clock.tick()
-            pass
-
-        print(req._result)
-
-        title = self.results['safe_title']
-        alt = self.results['alt']
-        num = int(self.results['num'])
-        image_url = self.results['img']
-        return ComicStrip(title, alt, int(num), image_url)
-
-
-
-            # print('Could not get the [{}] comic number [{}]!'.format
-            #       (self.comic_name, number))
-            #
-            # time.sleep(5)
-            # return self.get_strip(number+1)
 
 
 class Page(GridLayout):
@@ -172,53 +83,35 @@ class ComicStripSlideViewer(Carousel):
         # self.downloader = self.parent.downloader
         # self.downloader = downloader
         # return
-        self.downloader = ComicDownloader()
-        # if not self.buffer_count:
-        self.buffer_count = 3
-        self.buffer_half_count = int(self.buffer_count/2)
+        # self.downloader = ComicDownloader()
 
-        self.buffer = []
+        strip_number = 390
+        size = 3
+        self.downloader = cd.ComicDownloader(self)
 
-        buffer_count_range = range(self.buffer_count)
+        self.sb = StripBuffer(current_id=strip_number, size=size,
+                              downloader=self.downloader)
+        print(self.sb)
+        # x = 50
+        # for q in range(x):
+        #     print('Called next strip')
+        #     sb.next_strip()
+        #     print(sb)
+        # for q in range(x):
+        #     print('Called prev strip')
+        #     sb.prev_strip()
+        #     print(sb)
 
-        self.strip_number = 403
-        self.strip_number = 390
-
-
-        index_range = [self.strip_number + index - self.buffer_half_count
-                       for index in buffer_count_range]
-
-        def shift(l, n):
-            return l[n:] + l[:n]
-
-        strip_number_range = shift(index_range, self.buffer_half_count)
-
-
-        # time.sleep(2)
-        # for q in buffer_count_range:
-        #     item = GridLayout(cols=1)
-        #     self.buffer.append(item)
-        #     self.add_widget(item)
-
-        for (buffer_index, strip_number) in zip(buffer_count_range, strip_number_range):
-
-            comic_strip = self.downloader.get_strip(strip_number)
-            grid_layout = GridLayout(cols=1)
-            grid_layout.add_widget(comic_strip)
-
-            self.buffer.append(grid_layout)
-            self.add_widget(grid_layout)
-
-
-        # print(self.buffer)
-        self.comic_strip_index = 0
-        # self.last_comic_strip_index = 0
 
     def load_next(self, mode='next', **kwargs):
         super(ComicStripSlideViewer, self).load_next(**kwargs)
-        # self.next_strip()
-        print('loading next')
-        self.reload_buffer()
+        print('Loading next strip')
+        self.sb.next_strip()
+
+    def load_previous(self, **kwargs):
+        super(ComicStripSlideViewer, self).load_previous(**kwargs)
+        print('Loading previous strip')
+        self.sb.prev_strip()
 
     def on_sliding_end(self):
         '''
@@ -231,66 +124,39 @@ class ComicStripSlideViewer(Carousel):
         self.update_strip_buffer()
 
         pass
-
-    def update_strip_buffer(self):
-        # for strip in self.buffer:
-        #     if
-        pass
+    #
+    # def update_strip_buffer(self):
+    #     # for strip in self.buffer:
+    #     #     if
+    #     pass
 
     def next_strip(self):
         self.load_next()
 
-    def reload_buffer(self):
-        self.comic_strip_index = self.index
-        if(self.comic_strip_index+1 == self.buffer_count):
-            actualize_index = 0
-        else:
-            actualize_index = self.comic_strip_index + 1
+    def prev_strip(self):
+        self.load_previous()
 
-        grid_layout = self.buffer[actualize_index]
-        strip_number = self.strip_number = self.strip_number+1
-        # strip_number = grid_layout.children[0].num + 1
-        grid_layout.clear_widgets()
-
-
-        comic_strip = self.downloader.get_strip(strip_number)
-        grid_layout.add_widget(comic_strip)
+    # def reload_buffer(self):
+    #     self.comic_strip_index = self.index
+    #     if(self.comic_strip_index+1 == self.buffer_count):
+    #         actualize_index = 0
+    #     else:
+    #         actualize_index = self.comic_strip_index + 1
+    #
+    #     grid_layout = self.buffer[actualize_index]
+    #     strip_number = self.strip_number = self.strip_number+1
+    #     # strip_number = grid_layout.children[0].num + 1
+    #     grid_layout.clear_widgets()
+    #
+    #
+    #     comic_strip = self.downloader.update_strip(strip_number)
+    #     grid_layout.add_widget(comic_strip)
 
 
 
     # def get_slide_container(self, slide):
 
-class ComicStrip(GridLayout):
-    num = -1
-    alt = ''
-    title = ''
-    image_url = ''
-    def __init__(self, title, alt, num, image_url, **kwargs):
-        super(GridLayout, self).__init__(**kwargs)
-        self.title = title
-        self.alt = alt
-        self.num = num
-        self.image_url = image_url
-        # print('hereeres')
 
-        im = CenteredAsyncImage(source = self.image_url,
-                                on_double_tap=CustomPopup(title=self.alt).open)
-                                # on_press=CustomPopup(title=self.alt).open)
-        # im = CenteredAsyncImage(source = 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
-        self.add_widget(im)
-
-    def __str__(self):
-        txt = '['
-        txt += 'num={0:>5},'.format(self.num)
-        txt += 'title={0:>14},'.format(self.title)
-        # txt += 'alt={0:>5},'.format(self.alt)
-        txt += 'image_url={0:>20},'.format(self.image_url)
-        txt += ']'
-        return txt
-    # pass
-
-class CenteredAsyncImage(AsyncImage):
-    pass
 
 
 class RedDwarfQiz(GridLayout):
@@ -358,17 +224,17 @@ class RedDwarfQiz(GridLayout):
         # store = JsonStore('http://dynamic.xkcd.com/api-0/jsonp/comic/123')
         # return
 
-        id = 123
-        url = "http://xkcd.com/{0}/info.0.json".format(id)
-        print(url)
-        p = CustomPopup(title = url)
-
-        req = UrlRequest(
-            # 'http://api.openweathermap.org/id/2.5/weather?q=Paris,fr',
-            url,
-            self.process_it)
-
-        p.open()
+        # id = 123
+        # url = "http://xkcd.com/{0}/info.0.json".format(id)
+        # print(url)
+        # p = CustomPopup(title = url)
+        #
+        # req = UrlRequest(
+        #     # 'http://api.openweathermap.org/id/2.5/weather?q=Paris,fr',
+        #     url,
+        #     self.process_it)
+        #
+        # p.open()
         # ____________________________________________________
         # store = JsonStore(url)
         # # a = store.get('title')

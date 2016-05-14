@@ -1,5 +1,5 @@
 import sys
-from main import ComicDownloader
+import ComicDownloader as cd
 
 class Node(object):
     count = 0
@@ -7,11 +7,21 @@ class Node(object):
     data = None
     next = None
     prev = None
-    downloader = ComicDownloader()
+    # downloader = cd.a
+    downloader = None
 
-    def __init__(self, id, next=None, prev=None):
+    def __init__(self, id, next=None, prev=None, downloader=None):
+        if downloader is not None:
+            Node.downloader = downloader
+
         Node.count += 1
-        self.update_data(id)
+        self.id = id
+        self.widget = self.downloader.create_strip_widget(self.id)
+        print('created widget for id {} = {} node created = {}'.format(
+            id, Node.count, self.widget))
+
+        # self.update_data(id)
+
         self.next = next
         self.prev = prev
 
@@ -34,7 +44,12 @@ class Node(object):
     def update_data(self, id):
         self.id = id
         # self.data = 'name'+str(id)
-        self.data = self.downloader.get_strip(self.id)
+
+        if self.widget is None:
+            self.widget = self.downloader.get_strip(id)
+        else:
+            # self.widget.update_id(self.id)\
+            self.widget.update_data(self.downloader.get_strip_data(id))
 
     def __str__(self):
         txt = '['
@@ -52,9 +67,15 @@ class StripBuffer(object):
     tail_back = None
     tail_front = None
 
+    # downloader = None
+
     # default_data = 'node_data'
 
-    def __init__(self, current_id=340, size=5):
+    def __init__(self, current_id=340, size=5, downloader=None):
+        # if downloader is None:
+        #     self.downloader = cd.ComicDownloader()
+        self.downloader = downloader
+        print(self.downloader)
         self.set_buffer_size(current_id, size)
 
 
@@ -69,7 +90,8 @@ class StripBuffer(object):
             self.delete_buffer()
 
         id = current_id
-        self.active = Node(id)
+
+        self.active = Node(id, downloader=self.downloader)
         node = self.active
 
         tail_front = node.add_next_on_tail()
@@ -130,26 +152,26 @@ class StripBuffer(object):
 
         return txt
 
-if __name__ == '__main__':
-    sb = StripBuffer(current_id=100, size=5)
-    # sb.set_buffer_size(current_id=0, size=5)
-    # sb.print_ids()
-    print(sb)
-    x = 50
-    for q in range(x):
-        print('Called next strip')
-        sb.next_strip()
-        print(sb)
-    for q in range(x):
-        print('Called prev strip')
-        sb.prev_strip()
-        print(sb)
-    # for q in range(10):
-    #     cll.add('list{}'.format(q))
-
-
-    # cll.add('list0')
-
+# if __name__ == '__main__':
+#     sb = StripBuffer(current_id=100, size=5)
+#     # sb.set_buffer_size(current_id=0, size=5)
+#     # sb.print_ids()
+#     print(sb)
+#     x = 50
+#     for q in range(x):
+#         print('Called next strip')
+#         sb.next_strip()
+#         print(sb)
+#     for q in range(x):
+#         print('Called prev strip')
+#         sb.prev_strip()
+#         print(sb)
+#     # for q in range(10):
+#     #     cll.add('list{}'.format(q))
+#
+#
+#     # cll.add('list0')
+#
 
 
 
