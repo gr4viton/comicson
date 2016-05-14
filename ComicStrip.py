@@ -14,6 +14,9 @@ from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import ObjectProperty, StringProperty, NumericProperty
 from kivy.uix.behaviors import ButtonBehavior
+# from kivy.uix.behaviors import Sc
+from kivy.uix.scatter import Scatter
+
 from kivy.config import Config
 
 from kivy.uix.popup import Popup
@@ -26,17 +29,32 @@ class CustomPopup(Popup):
 class CenteredAsyncImage(AsyncImage):
     pass
 
+# class ComicStripImage(CenteredAsyncImage, Button):
+# class ComicStripImage( ButtonBehavior, Scatter, AsyncImage):
+class ComicStripImage( ButtonBehavior, AsyncImage):
+    # def __init__(self, **kwargs):
+    #     super(AsyncImage, self).__init__(**kwargs)
+
+    # def popup(self):
+    #     pass
+    pass
+
 class ComicStrip(GridLayout):
-    num = -1
-    alt = ''
+    # num = -1
+    # alt = ''
     # title = ''
-    image_url = ''
+    # image_url = ''
     # im_widget_layout = ObjectProperty()
     im_widget = ObjectProperty()
 
     title = StringProperty('...loading...')
+    alt = StringProperty('...loading...')
+    image_url = StringProperty('')
     num = NumericProperty('-')
 
+    def popup_alt(self):
+        p = CustomPopup(title=self.alt)
+        p.open()
 
     def __init__(self, results, **kwargs):
         super(GridLayout, self).__init__(**kwargs)
@@ -73,9 +91,9 @@ class ComicStrip(GridLayout):
         # )
         # self.im_widget = CenteredAsyncImage(source = self.image_url,
         #                         )
-        self.im_widget.source = self.image_url
-        self.im_widget.on_double_tap=CustomPopup(title=self.alt).open
-        self.im_widget.reload()
+        # self.im_widget.source = self.image_url
+        # self.im_widget.on_double_tap=CustomPopup(title=self.alt).open
+        # self.im_widget.reload()
         print(self.im_widget, 'reloading with', self.image_url)
 
 

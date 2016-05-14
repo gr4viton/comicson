@@ -64,16 +64,11 @@
 #        downloader: root.downloader
 
 
-<CenteredAsyncImage>
-    size: self.texture_size
-#    size_hint: None, None
-#    size_hint: 10,10
-    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-
 <ComicStrip>
 #    parent: parent
 #    im_widget_layout: im_widget_layout
     im_widget: im_widget
+#    alt_popup: alt_popup
     id: parent
 
     rightmost: 'False'
@@ -147,21 +142,32 @@
 #                text: parent.title
                 text: root.title
 
-    CenteredAsyncImage:
+#    CenteredAsyncImage:
+    ComicStripImage:
         id: im_widget
+        source: root.image_url
+#        on_double_tap: CustomPopup(title=root.alt).open
+#        on_press: root.alt_popup.open()
 
-#    GridLayout:
-#        size_hint_y: 0
-#        cols:1
-#        id: im_widget_layout
+        on_press: root.popup_alt()
 
-#    GridLayout:
-#        cols:1
+#        on_double_tap: self.zoom()
 
-#
-##    CenteredAsyncImage
-##        source: root.image_url
-##        source: 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg'
+#    CustomPopup:
+#        id: alt_popup
+#        title: root.alt
+
+<ComicStripImage>
+    size: self.texture_size
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+#    on_press: root.popup()
+
+<CenteredAsyncImage>
+    size: self.texture_size
+#    size_hint: None, None
+#    size_hint: 10,10
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
 
 <ComicStripSlideViewer>
     min_move: 0.05
@@ -198,10 +204,15 @@
             buffer_count: 3
 
 <CustomPopup>:
-    size_hint: .5, .5
+    size_hint_y: 0.5
     auto_dismiss: False
-    title: 'Hello world'
+    title: '...loading...'
+#    background_color: (1, 1, 1, 125)
+    color: (1,1,1,0.5)
+
     Button:
+#        size_hint: .5, .5
+        size_hint_y: 0.1
         text: 'Click me to dismiss'
         on_press: root.dismiss()
 
@@ -228,45 +239,3 @@
 
 
 
-
-<StepWidget>:
-    cols: 1
-    stat_label: stat_label
-    size_hint_y: None
-    height: 300
-
-    size_hint_x: 1/3
-    padding: (2,2,2,2)
-    spacing: (2,2)
-    margin: 1
-    color: .08,.16 , .24
-    canvas.before:
-        Color:
-            rgb: self.color
-        Rectangle:
-            pos: self.x + self.margin, self.y + self.margin + 1
-            size: self.width - 2 * self.margin , self.height - 2 * self.margin
-#            self.thickness
-    ToggleButton:
-        id: toggle
-        text: root.name
-        size_hint_y: 0.15
-        state: 'down'
-        on_state: root.set_drawing(self.state == 'down')
-
-    Image:
-        id: kivy_image
-        size_hint_y: 0.8
-#        size_hint_x: 1
-        background_normal: 'True'
-    Label:
-        id: stat_label
-        valign: 'top'
-        size_hint_y: 0.08
-    #    on_touch_down: root.drawing = (toggle.state == 'down')
-    #    on_press: print('jasd')
-        #self.toggle_drawing()
-    #    root.drawing = (toggle_object.state == 'down')
-
-#    GridLayout
-#        cols: 1

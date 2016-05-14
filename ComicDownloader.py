@@ -80,7 +80,7 @@ class ComicDownloader(object):
         req = UrlRequest(url, self.process_request)
 
         while not req.is_finished:
-            time.sleep(1)
+            # time.sleep(1)
             Clock.tick()
             pass
 

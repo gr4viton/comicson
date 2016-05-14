@@ -31,6 +31,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.popup import Popup
 
 from kivy.logger import Logger
+from kivy.animation import AnimationTransition
 
 # is not working with - python2 in android only
 # from requests import get
@@ -92,6 +93,18 @@ class ComicStripSlideViewer(Carousel):
         self.sb = StripBuffer(current_id=strip_number, size=size,
                               downloader=self.downloader)
         print(self.sb)
+
+        # print(dir(AnimationTransition))
+        a= ['in_back', 'in_bounce', 'in_circ', 'in_cubic', 'in_elastic', 'in_expo',
+            'in_out_back', 'in_out_bounce', 'in_out_circ', 'in_out_cubic', 'in_out_elastic',
+            'in_out_expo', 'in_out_quad', 'in_out_quart', 'in_out_quint', 'in_out_sine',
+            'in_quad', 'in_quart', 'in_quint', 'in_sine', 'linear', 'out_back', 'out_bounce',
+            'out_circ', 'out_cubic', 'out_elastic', 'out_expo', 'out_quad', 'out_quart',
+            'out_quint', 'out_sine']
+
+        self.anim_type = 'in_expo'
+        self.anim_type = 'in_out_quart'
+
         # x = 50
         # for q in range(x):
         #     print('Called next strip')
@@ -104,14 +117,20 @@ class ComicStripSlideViewer(Carousel):
 
 
     def load_next(self, mode='next', **kwargs):
-        super(ComicStripSlideViewer, self).load_next(**kwargs)
-        print('Loading next strip')
-        self.sb.next_strip()
+        super(ComicStripSlideViewer, self).load_next(mode=mode,**kwargs)
+        # print('Loading next strip')
+        # self.sb.next_strip()
+        if mode == 'next':
+            print('Loading next strip')
+            self.sb.next_strip()
+        else:
+            print('Loading previous strip')
+            self.sb.prev_strip()
 
-    def load_previous(self, **kwargs):
-        super(ComicStripSlideViewer, self).load_previous(**kwargs)
-        print('Loading previous strip')
-        self.sb.prev_strip()
+    # def load_previous(self, **kwargs):
+    #     super(ComicStripSlideViewer, self).load_previous(**kwargs)
+    #     print('Loading previous strip')
+    #     self.sb.prev_strip()
 
     def on_sliding_end(self):
         '''
@@ -134,7 +153,8 @@ class ComicStripSlideViewer(Carousel):
         self.load_next()
 
     def prev_strip(self):
-        self.load_previous()
+        # self.load_previous()
+        self.load_next(mode='prev')
 
     # def reload_buffer(self):
     #     self.comic_strip_index = self.index
