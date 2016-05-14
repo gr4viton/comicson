@@ -60,19 +60,7 @@ class ComicStrip(GridLayout):
     def __init__(self, results, **kwargs):
         super(GridLayout, self).__init__(**kwargs)
         self.update_data_from_result(results)
-        # print('hereeres')
-        # self.im_widget_layout(self.add_widget())
 
-    # def __init__(self, title, alt, num, image_url, **kwargs):
-    #     super(GridLayout, self).__init__(**kwargs)
-    #     self.title = title
-    #     self.alt = alt
-    #     self.num = num
-    #     self.image_url = image_url
-    #     # print('hereeres')
-    #
-    #     self.im_widget_layout = CenteredAsyncImage(source = self.image_url,
-    #                             on_double_tap=CustomPopup(title=self.alt).open)
     def update_data_from_result_async(self, req, results):
         if results is not None:
             Logger.info('Async update from results of url request:')
@@ -83,30 +71,17 @@ class ComicStrip(GridLayout):
             Logger.info('Async update from results not possible- results is None!')
             return None
 
-
-
-
     def update_data_from_result(self, results):
+        if results is  None:
+            self.results = None
+            print('Empty ComicStrip created')
+            return
         self.results = results
-
         self.title = self.results['safe_title']
         self.alt = self.results['alt']
         self.num = int(self.results['num'])
         self.image_url = self.results['img']
 
-        # self.title_text = self.title
-        # self.remove_widget(self.im_widget_layout)
-        # self.im_widget_layout.()
-        # self.clear_widgets()
-        # self.im_widget_layout.add_widget(
-        #     CenteredAsyncImage(source = self.image_url,
-        #                         on_double_tap=CustomPopup(title=self.alt).open)
-        # )
-        # self.im_widget = CenteredAsyncImage(source = self.image_url,
-        #                         )
-        # self.im_widget.source = self.image_url
-        # self.im_widget.on_double_tap=CustomPopup(title=self.alt).open
-        # self.im_widget.reload()
         print(self.im_widget, 'reloading with', self.image_url)
 
 

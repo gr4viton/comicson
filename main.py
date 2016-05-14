@@ -87,7 +87,7 @@ class ComicStripSlideViewer(Carousel):
         # self.downloader = ComicDownloader()
 
         strip_number = 390
-        size = 3
+        size = 30
         self.downloader = cd.ComicDownloader(self)
 
         self.sb = StripBuffer(current_id=strip_number, size=size,

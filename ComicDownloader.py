@@ -12,6 +12,7 @@ from kivy.clock import Clock
 from ComicStrip import ComicStrip
 
 class ComicDownloader(object):
+    results = None
     def __init__(self, carousel):
         self.comic_name = 'xkcd'
         self.carousel = carousel
@@ -34,8 +35,15 @@ class ComicDownloader(object):
         # if self.get_strip_widget()
 
         # widget = self.get_strip_widget(number)
-        widget = ComicStrip(self.get_strip_data(number))
+
+        # functional - waiting
+        widget = ComicStrip(None)
+        self.get_strip_data(number,
+                            process_request=widget.update_data_from_result_async,
+                            wait=False)
         self.carousel.add_widget(widget)
+
+
         return widget
 
     # def update_strip(self, number, strip_widget):

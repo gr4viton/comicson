@@ -43,17 +43,9 @@ class Node(object):
 
     def update_data(self, id):
         self.id = id
-        # self.data = 'name'+str(id)
-        #
-        # if self.widget is None:
-        #     self.widget = self.downloader.get_strip(id)
-        # else:
-        # self.widget.update_id(self.id)\
-
-        # functional:
-        # self.widget.update_data(self.downloader.get_strip_data(id))
         self.downloader.get_strip_data(id,
-                                       process_request=self.widget.update_data_from_result_async,
+                                       process_request=
+                                       self.widget.update_data_from_result_async,
                                        # wait=True)
                                        wait=False)
 
