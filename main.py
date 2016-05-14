@@ -1,7 +1,9 @@
 #
 # import os
 # os.environ['KIVY_IMAGE'] = 'pil,sdl2'
-
+import kivy
+kivy.require('1.0.6')
+__version__ = '0.0.1'
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -27,13 +29,27 @@ from kivy.uix.image import AsyncImage
 from kivy.uix.carousel import Carousel
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-from requests import get
-from json import loads
-from re import search
+# from kivy.uix.popup import Popup
+
+# is not working with - python2 in android only
+# from requests import get
+# from json import loads
+# import json
+# from re import search
+#____________________________________________________
+
+from kivy.storage.dictstore import DictStore
+from kivy.storage.jsonstore import JsonStore
+from os.path import join
+
+# from kivy.network.urlrequest import UrlRequest
 
 # web scrapping inspiration from https://github.com/1995eaton/xkcd_downloader/blob/master/xkcd_downloader.py
 import time
 import sys
+
+# class CustomPopup(Popup):
+#     pass
 
 class ComicDownloader:
     def __init__(self):
@@ -41,9 +57,22 @@ class ComicDownloader:
         pass
 
     def get_strip(self, number):
+
+        title = 'Nightmares'
+        alt = 'you dont sleep'
+        num = 666
+        image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
+
+        return ComicStrip(title, alt, int(num), image_url)
+
+
         print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
         info = self.download_json(number)
         print(info)
+
+
+
+        # return
         if info is None:
             print("Error: URL could not be retrieved")
             return self.get_strip(number+1)
@@ -70,8 +99,12 @@ class ComicDownloader:
             time.sleep(5)
             return self.get_strip(number+1)
 
-
     def download_json(self, comic_number):
+        return 'nan'
+        # return get("http://xkcd.com/info.0.json")
+
+    def download_json_python3(self, comic_number):
+        return
         if comic_number < 0:
             return None
         try:
@@ -114,8 +147,8 @@ class ComicStripSlideViewer(Carousel):
         super(ComicStripSlideViewer, self).__init__(**kwargs)
         # self.downloader = self.parent.downloader
         # self.downloader = downloader
+        # return
         self.downloader = ComicDownloader()
-
         # if not self.buffer_count:
         self.buffer_count = 3
         self.buffer_half_count = int(self.buffer_count/2)
@@ -205,71 +238,132 @@ class CenteredAsyncImage(AsyncImage):
 
 
 class RedDwarfQiz(GridLayout):
-    gl_left = ObjectProperty()
-    label_mean_exec_time = StringProperty('??')
+    # gl_left = ObjectProperty()
+    # label_mean_exec_time = StringProperty('??')
     layout_bottom = ObjectProperty()
+
+    def process_it(self, req, results):
+        # for key, value in results['weather'][0].items():
+        #     print(key, ': ', value)
+        print('here')
+        [print(key) for key in results.keys()]
+        what = 'year'
+        if what in results.keys():
+            print(results.get(what))
+
+
+        p = CustomPopup(title = results['safe_title'])
+        p.open()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
         super(RedDwarfQiz, self).__init__(**kwargs)
 
+        # data_dir = getattr(self, 'user_data_dir') #get a writable path to save the file
+        # store = JsonStore(join(data_dir, 'kivy_user.json'))
+        store = JsonStore('kivy_user.json')
+
+        store.put('score', best=50)
+
         #
         # dn = ComicDownloader()
         # dn.get_strip(1100)
-
+        
         exp = CenteredAsyncImage(
             source='http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
+
+
+        # req = UrlRequest(url, on_success, on_redirect, on_failure, on_error,
+        #                  on_progress, req_body, req_headers, chunk_size,
+        #                  timeout, method, decode, debug, file_path, ca_file,
+        #                  verify)
+
+
+        # store = JsonStore('http://dynamic.xkcd.com/api-0/jsonp/comic/123')
+        return
+
+        id = 123
+        url = "http://xkcd.com/{0}/info.0.json".format(id)
+        print(url)
+        p = CustomPopup(title = url)
+        p.open()
+
+        return
+        req = UrlRequest(
+            # 'http://api.openweathermap.org/data/2.5/weather?q=Paris,fr',
+            url,
+            self.process_it)
+
+
+        # ____________________________________________________
+        # store = JsonStore(url)
+        # # a = store.get('title')
+        # print('here')
+        # [print(key) for key in store.keys()]
+        # what = 'year'
+        # if store.exists(what):
+        #     print(store.get(what))
+
+        # a = store.get('num')
+        # print(id)
+
         self.layout_bottom.add_widget(exp)
+
+
 
         car = Carousel()
         for x in range(0,10):
             car.add_widget(Page(index=x+1))
+
+
         self.layout_bottom.add_widget(car)
-        self.init_keyboard()
+        # return
+        # self.init_keyboard()
 
 
 
+    #
+    # def init_keyboard(self):
+    # #     Widget
+    # #     self._keyboard = self.request_keyboard(
+    # #         self._keyboard_closed, self, 'text')
+    # #     if self._keyboard.widget:
+    # #         # If it exists, this widget is a VKeyboard object which you can use
+    # #         # to change the keyboard layout.
+    # #         pass
+    # #     self._keyboard.bind(on_key_down=self._on_keyboard_down)
+    #     pass
+    #
+    # def _keyboard_closed(self):
+    #     print('My keyboard have been closed!')
+    #     self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+    #     self._keyboard = None
+    #
+    # def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+    #     print('The key', keycode, 'have been pressed')
+    #     try:
+    #         print('- text :', text)
+    #     except:
+    #         print('cannot print text')
+    #     try:
+    #         print('- modif:', modifiers)
+    #     except:
+    #         print('cannot print modifiers')
+    #     # print(' - text is %r' % text)
+    #     # print(' - modifiers are %r' % modifiers)
+    #
+    #     # Keycode is composed of an integer + a string
+    #     # If we hit escape, release the keyboard
+    #     if keycode[1] == 'escape':
+    #         keyboard.release()
+    #
+    #     # Return True to accept the key. Otherwise, it will be used by
+    #     # the system.
+    #     return True
+    #
+    # def on_touch(self, *args, **kwargs):
+    #     self.uniforms['touch'] = [float(i) for i in self.touch]
 
-    def init_keyboard(self):
-    #     Widget
-    #     self._keyboard = self.request_keyboard(
-    #         self._keyboard_closed, self, 'text')
-    #     if self._keyboard.widget:
-    #         # If it exists, this widget is a VKeyboard object which you can use
-    #         # to change the keyboard layout.
-    #         pass
-    #     self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        pass
-
-    def _keyboard_closed(self):
-        print('My keyboard have been closed!')
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard = None
-
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        print('The key', keycode, 'have been pressed')
-        try:
-            print('- text :', text)
-        except:
-            print('cannot print text')
-        try:
-            print('- modif:', modifiers)
-        except:
-            print('cannot print modifiers')
-        # print(' - text is %r' % text)
-        # print(' - modifiers are %r' % modifiers)
-
-        # Keycode is composed of an integer + a string
-        # If we hit escape, release the keyboard
-        if keycode[1] == 'escape':
-            keyboard.release()
-
-        # Return True to accept the key. Otherwise, it will be used by
-        # the system.
-        return True
-
-    def on_touch(self, *args, **kwargs):
-        self.uniforms['touch'] = [float(i) for i in self.touch]
 
 class RedDwarfQizApp(App):
     def build(self):

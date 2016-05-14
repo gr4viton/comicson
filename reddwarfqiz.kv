@@ -62,66 +62,10 @@
 
 
 <CenteredAsyncImage>
-#    size: self.texture_size
+    size: self.texture_size
 #    size_hint: None, None
 #    size_hint: 10,10
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-
-#<ComicStrip2>
-#    cols: 1
-#    id:parent
-#    title: 'unitialized'
-#    image_url: ''
-##    name: 'unitialized'
-#    num: 0
-#
-#    margin: 1
-#    color: .08,.16 , .24
-#    canvas.before:
-#        Color:
-#            rgb: self.color
-#        Rectangle:
-#            pos: self.x + self.margin, self.y + self.margin + 1
-#            size: self.width - 2 * self.margin , self.height - 2 * self.margin
-#
-#
-#    GridLayout:
-#        cols:2
-#        padding: 5,5,5,5
-##        title: root.title
-##        num: root.num
-#        size_hint: 1, None
-#        height: 15
-#
-#        GridLayout
-#            cols:1
-##
-#            margin: 1
-#            color: .08,.11 , .24
-#            canvas.before:
-#                Color:
-#                    rgb: self.color
-#                Rectangle:
-#                    pos: self.x + self.margin, self.y + self.margin + 1
-#                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
-#
-#            Label:
-#                size_hint: 0.2, 1
-#                valign: 'middle'
-#    #            halign: 'center'
-#                size: self.texture_size
-#                text: str(parent.num)
-#        GridLayout
-#            cols:1
-#
-#            color2: .08,.11 , .24
-#            margin: 1
-#            canvas.before:
-#                Color:
-#                    rgb: self.color2
-#                Rectangle:
-#                    pos: self.x + self.margin, self.y + self.margin + 1
-#                    size: self.width - 2 * self.margin , self.height - 2 * self.margin
 
 <ComicStrip>
 #    parent: parent
@@ -132,6 +76,7 @@
 #    name: 'unitialized'
     num: 0
     size_hint: 1, 1
+    text_size: self.size
 
     margin: 1
     color: .08,.16 , .24
@@ -147,9 +92,10 @@
         padding: 5,5,5,5
 #        title: root.title
 #        num: root.num
-        size_hint: 1, None
+        size_hint: 1, 0.1
         height: 15
         GridLayout
+            size_hint_x: 0.2
             cols:1
 
             color2: .08,.91 , .24
@@ -170,14 +116,16 @@
         GridLayout
             cols:1
 
-            color2: .28,.91 , .24
+            color2: .28,.21 , .44
             margin: 1
+#            size: self.texture_size
             canvas.before:
                 Color:
                     rgb: self.color2
                 Rectangle:
                     pos: self.x + self.margin, self.y + self.margin + 1
                     size: self.width - 2 * self.margin , self.height - 2 * self.margin
+#                    size: self.width , self.height
 
             Label:
                 size_hint: 0.8, 1
@@ -186,6 +134,8 @@
                 size: self.texture_size
                 text: parent.title
 
+#    GridLayout:
+#        cols:1
 
 #
 ##    CenteredAsyncImage
@@ -206,7 +156,7 @@
         GridLayout:
             cols:4
             height: 13
-            size_hint: 1, None
+            size_hint: 1, 0.05
             padding: 5,5,5,5
 
             Button:
@@ -225,6 +175,13 @@
 #            downloader: root.downloader
             buffer_count: 3
 
+#<CustomPopup>:
+#    size_hint: .5, .5
+#    auto_dismiss: False
+#    title: 'Hello world'
+#    Button:
+#        text: 'Click me to dismiss'
+#        on_press: root.dismiss()
 
 <Page>:
     cols: 3
