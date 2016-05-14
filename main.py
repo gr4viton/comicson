@@ -58,70 +58,84 @@ class ComicDownloader:
         self.comic_name = 'xkcd'
         pass
 
+    def process_request(self, req, results):
+
+        print('je')
+
+        if results is not None:
+            Logger.info('Results of url request:')
+            [Logger.info(key) for key in results.keys()]
+        else:
+            Logger.info('No data result for request!')
+
+        # key = 'img'
+        # Logger.info(key + ' : ' + results[key])
+
+        # [print(key) for key in results.keys()]
+        # what = 'year'
+        # if what in results.keys():
+        #     print(results.get(what))
+
+        # title = 'Nightmares'
+        # alt = 'you dont sleep'
+        # num = 666
+        # image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
+
+        # self.title = results['title']
+        # self., results['alt'], results['num'], results['image_url'])
+        self.results = results
+
+        # print(title, alt, num, image_url)
+        # return title, alt, num, image_url
+        # req.is_finished = True
+        return True
+
     def get_strip(self, number):
 
-        title = 'Nightmares'
-        alt = 'you dont sleep'
-        num = 666
-        image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
+        # title = 'Nightmares'
+        # alt = 'you dont sleep'
+        # num = 666
+        # image_url = 'http://imgs.xkcd.com/comics/keeping_time.png'
+        #
+        # return ComicStrip(title, alt, int(num), image_url)
 
+
+        if number < 0:
+            url = None
+            Logger.info('Cannot load negative comic number!')
+            return None
+        elif number == 0:
+            url = "http://xkcd.com/info.0.json"
+        else:
+            url = "http://xkcd.com/{0}/info.0.json".format(number)
+
+        # url = "http://xkcd.com/{0}/info.0.json".format(id)
+        # print(url)
+        # p = CustomPopup(title = url)
+
+        print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
+        req = UrlRequest(url, self.process_request)
+
+        while not req.is_finished:
+            time.sleep(1)
+            Clock.tick()
+            pass
+
+        print(req._result)
+
+        title = self.results['safe_title']
+        alt = self.results['alt']
+        num = int(self.results['num'])
+        image_url = self.results['img']
         return ComicStrip(title, alt, int(num), image_url)
 
 
-        print('Trying to get the [{}] comic number [{}]'.format(self.comic_name, number))
-        info = self.download_json(number)
-        print(info)
 
-
-
-        # return
-        if info is None:
-            print("Error: URL could not be retrieved")
-            return self.get_strip(number+1)
-        try:
-            # print('here')
-            title, alt, num = (info['safe_title'], info['alt'], str(info['num']))
-            # image = num+search("\.([a-z])+$", info['img']).group()
-            image_url = info['img']
-            print(title, '|', alt, '|', num ,'|', image_url)
-            # print(info)
-            # print('here')
-            a = ComicStrip(title, alt, int(num), image_url)
-            return a
-            # print('here2')
-        # except AssertionError as ex:
-        #     # print("AssertionError ({0}): {1}".format(ex.errno, ex.strerror))
-        #     return self.get_strip(number+1)
-        except Exception as ex:
-            # print("Error({0}): {1}".format(ex.errno, ex.strerror))
-            print('Exception:', sys.exc_info()[0])
-            print('Could not get the [{}] comic number [{}]!'.format
-                  (self.comic_name, number))
-
-            time.sleep(5)
-            return self.get_strip(number+1)
-
-    def download_json(self, comic_number):
-        return 'nan'
-        # return get("http://xkcd.com/info.0.json")
-
-    def download_json_python3(self, comic_number):
-        return
-        if comic_number < 0:
-            return None
-        try:
-            if comic_number == 0:
-                return get("http://xkcd.com/info.0.json").json()
-            else:
-                return get("http://xkcd.com/{0}/info.0.json".
-                           format(comic_number)).json()
-        # except (requests.exceptions.ConnectionError, ValueError):
-        #     return None
-        except Exception:
-            print(Exception.args)
-            return self.download_json(comic_number+1)
-
-
+            # print('Could not get the [{}] comic number [{}]!'.format
+            #       (self.comic_name, number))
+            #
+            # time.sleep(5)
+            # return self.get_strip(number+1)
 
 
 class Page(GridLayout):
@@ -136,10 +150,14 @@ class Page(GridLayout):
 class Menu(Carousel):
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
+        # Menu.next_slide()
+
+        self.load_next()
 
 class ComicScreen(Screen):
     def __init__(self, **kwargs):
         super(ComicScreen, self).__init__(**kwargs)
+
         #
         # self.downloader = ComicDownloader()
 
@@ -161,6 +179,7 @@ class ComicStripSlideViewer(Carousel):
 
         self.strip_number = 403
         self.strip_number = 390
+
 
         index_range = [self.strip_number + index - self.buffer_half_count
                        for index in buffer_count_range]
@@ -197,6 +216,23 @@ class ComicStripSlideViewer(Carousel):
         print('loading next')
         self.reload_buffer()
 
+    def on_sliding_end(self):
+        '''
+        happens at a time the user slides to a new slide
+        = next or previous
+        (or after a time interval)
+        '''
+
+        # cur = buffer[cur_id]
+        self.update_strip_buffer()
+
+        pass
+
+    def update_strip_buffer(self):
+        # for strip in self.buffer:
+        #     if
+        pass
+
     def next_strip(self):
         self.load_next()
 
@@ -229,7 +265,9 @@ class ComicStrip(GridLayout):
         self.image_url = image_url
         # print('hereeres')
 
-        im = CenteredAsyncImage(source = self.image_url)
+        im = CenteredAsyncImage(source = self.image_url,
+                                on_double_tap=CustomPopup(title=self.alt).open)
+                                # on_press=CustomPopup(title=self.alt).open)
         # im = CenteredAsyncImage(source = 'http://kivy.org/funny-pictures-cat-is-expecting-you.jpg')
         self.add_widget(im)
 

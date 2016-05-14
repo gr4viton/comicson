@@ -28,6 +28,7 @@
 #                on_release: camera.play = False
 
 <Menu>:
+    cs: cs
     min_move: 0.05
     scroll_distance: self.height * 0.3
     direction: 'bottom'
@@ -54,10 +55,12 @@
         Button:
             text: 'xkcd'
             size: sp(68), sp(62)
+            on_press: root.load_next()
         Button:
             text: 'smbc'
 
     ComicScreen:
+        id: cs
 #        downloader: root.downloader
 
 
@@ -70,10 +73,16 @@
 <ComicStrip>
 #    parent: parent
     id: parent
+
+    rightmost: 'False'
+    leftmost: 'False'
+
     cols:1
-    title: 'unitialized'
+    title: '..loading..'
     image_url: ''
 #    name: 'unitialized'
+    alt: ''
+
     num: 0
     size_hint: 1, 1
     text_size: self.size
@@ -86,6 +95,7 @@
         Rectangle:
             pos: self.x + self.margin, self.y + self.margin + 1
             size: self.width - 2 * self.margin , self.height - 2 * self.margin
+
 
     GridLayout:
         cols:2
@@ -156,7 +166,7 @@
         GridLayout:
             cols:4
             height: 13
-            size_hint: 1, 0.05
+            size_hint: 1, 0.1
             padding: 5,5,5,5
 
             Button:
