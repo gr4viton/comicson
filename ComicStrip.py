@@ -47,11 +47,11 @@ class SetNumberPopup(Popup):
         self.on_set_number_function = on_set_number_function
     #
     # def on_valu
-    def on_set_number(self, value):
+    def on_set_number(self, value, random=False):
         # if self.on_dismiss_function is not None:
         # value = self.slider.value
         print('Selected value from SetNumberPopup = [{}]'.format(value))
-        self.on_set_number_function(int(value))
+        self.on_set_number_function(int(value), random)
         # self.on_set_number
         self.dismiss()
         # super(Popup, self).on_dismiss(**kwargs)

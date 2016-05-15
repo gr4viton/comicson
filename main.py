@@ -214,9 +214,12 @@ class ComicStripSlideViewer(Carousel):
         self.load_next(mode='prev')
 
 
-    def set_number(self, random=False):
+    def set_number(self, random=False, not_numbers=None):
         if random==True:
             num = self.downloader.comic.get_random_number()
+            if not_numbers is not None:
+                if num in not_numbers: # for loop
+                    num = self.downloader.comic.get_random_number()
             self.sb.set_active_id(num)
         else:
             id = self.sb.active.id
@@ -224,8 +227,11 @@ class ComicStripSlideViewer(Carousel):
             p = SetNumberPopup(id, max, on_set_number_function=self.set_number_async)
             p.open()
 
-    def set_number_async(self, number):
-        self.sb.set_active_id(number)
+    def set_number_async(self, number, random=False):
+        if not random:
+            self.sb.set_active_id(number)
+        else:
+            self.set_number(random, not_numbers=[number])
 
     def save_image(self):
         print('Image not saved')

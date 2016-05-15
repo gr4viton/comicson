@@ -230,7 +230,7 @@
             # suboption_box for sharing..
 <SetNumberPopup>
     slider: slider
-    size_hint_y: 0.5
+    size_hint_y: 0.8
     auto_dismiss: False
     title: 'Select comic strip number to load'
 #    background_color: (1, 1, 1, 125)
@@ -240,24 +240,58 @@
 #    max: 1
     GridLayout:
         cols: 1
+        GridLayout:
+            cols: 5
+            size_hint_y: 0.4
+            Label:
+                text: '0'
+            Label:
+                text: '<'
+            Label:
+                text: str(int(slider.value))
+                bold: 'True'
+            Label:
+                text: '<='
+            Label:
+                text: str(int(slider.max))
+        GridLayout:
+            cols:2
+            size_hint_y: 0.2
+            Button:
+                text: '-'
+                on_press: slider.value -= 1
+            Button:
+                text: '+'
+                on_press: slider.value += 1
         Slider:
             id: slider
 #            min: root.min
 #            max: root.max
 #            value: root.value
             on_value: self.value = int(self.value)
-        Label:
-            text: str(int(slider.value))
-        Button:
-    #        size_hint: .5, .5
-            size_hint_y: 0.2
-            text: 'Open number'
-            on_press: root.on_set_number(slider.value)
-        Button:
-    #        size_hint: .5, .5
-            size_hint_y: 0.2
-            text: 'Click me to dismiss'
-            on_press: root.dismiss()
+
+        GridLayout:
+            cols:2
+            Button:
+        #        size_hint: .5, .5
+                size_hint_y: 0.2
+                text: 'Random'
+                on_press: root.on_set_number(slider.value, random=True)
+            Button:
+        #        size_hint: .5, .5
+                size_hint_y: 0.2
+                text: 'Latest'
+                on_press: root.on_set_number(0)
+            Button:
+        #        size_hint: .5, .5
+                size_hint_y: 0.2
+                text: 'Dismiss'
+                on_press: root.dismiss()
+            Button:
+        #        size_hint: .5, .5
+                size_hint_y: 0.2
+                text: 'Selected'
+                on_press: root.on_set_number(slider.value)
 
 
 <AltTextPopup>:
