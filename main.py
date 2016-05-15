@@ -217,7 +217,8 @@ class ComicStripSlideViewer(Carousel):
             p.open()
             num = p.num
 
-        self.sb.reset_to_number(num)
+
+        self.sb.set_active_id(num)
 
     def save_image(self):
         print('Image not saved')

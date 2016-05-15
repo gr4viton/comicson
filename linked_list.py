@@ -76,8 +76,15 @@ class StripBuffer(object):
         print(self.downloader)
         self.set_buffer_size(current_id, size)
 
-    def reset_to_number(self, new_id):
-
+    def set_active_id(self, new_id):
+        rng = list(range(new_id-self.side_count, new_id+self.side_count+1))
+        print(rng)
+        def shift(l, n):
+            return l[n:] + l[:n]
+        rng = shift(rng, self.side_count)
+        print(rng)
+        for (node, id) in zip(self, rng):
+            node.update_data(id)
         pass
 
     def set_buffer_size(self, current_id=340, size=5):
@@ -136,6 +143,16 @@ class StripBuffer(object):
         self.tail_back.update_data(new_back_id)
         print(self)
 
+    def __iter__(self):
+        node = self.active
+        yield node
+        node = node.next
+        for q in range(self.count-1):
+            yield node
+            node = node.next
+        # if node == self.active:
+        #     print('Got to the begining = circular linked list!\n')
+        raise StopIteration
 
     def __str__(self):
         txt = ''
@@ -145,13 +162,15 @@ class StripBuffer(object):
         txt += '{} = tail_back\n'.format(str(self.tail_back))
 
         txt += 'Printing forward from active!\n'
-        node = node.next
-        for q in range(self.count-1):
+        for node in self:
             txt += '{} = previous->next\n'.format(str(node))
-            node = node.next
-            # if node == self.active:
-        if node == self.active:
-            txt += 'Got to the begining = circular linked list!\n'
+        # node = node.next
+        # for q in range(self.count-1):
+        #     txt += '{} = previous->next\n'.format(str(node))
+        #     node = node.next
+        #     # if node == self.active:
+        # if node == self.active:
+        #     txt += 'Got to the begining = circular linked list!\n'
 
         return txt
 
