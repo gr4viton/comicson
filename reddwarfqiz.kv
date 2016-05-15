@@ -102,7 +102,8 @@
             Label: # num label
                 size_hint: 0.2, 1
                 valign: 'middle'
-    #            halign: 'center'
+                halign: 'center'
+                bold: 'True'
                 size: self.texture_size
                 text: str(root.num)
         GridLayout
@@ -123,6 +124,8 @@
                 size_hint: 0.8, 1
                 valign: 'middle'
                 halign: 'center'
+                bold: 'True'
+                multiline: 'True'
                 size: self.texture_size
 #                text: parent.title
                 text: root.title
@@ -131,16 +134,18 @@
     ComicStripImage:
         id: im_widget
         source: root.image_url
-#        on_double_tap: CustomPopup(title=root.alt).open
+#        on_double_tap: AltTextPopup(title=root.alt).open
 #        on_press: root.alt_popup.open()
 
         on_press: root.popup_alt()
 
 #        on_double_tap: self.zoom()
 
-#    CustomPopup:
+#    AltTextPopup:
 #        id: alt_popup
 #        title: root.alt
+
+<ImageButton>
 
 <ComicStripImage>
     size: self.texture_size
@@ -194,10 +199,24 @@
                 size_hint_x: root.small
                 text: 'rnd'
                 on_press: viewer.set_number(random=True)
-            Button:
-                size_hint_x: root.small
-                text: 'save'
-                on_press: viewer.save_image()
+#            ImageButton:
+#                size_hint_x: root.small
+#                text: 'save'
+##                font_name: 'webdings'
+#                on_press: viewer.save_image()
+#
+#            ImageButton:
+#                size_hint_x: root.small
+#                text: 'bookmark'
+##                font_name: 'webdings'
+#                on_press: viewer.save_image()
+#
+#            ImageButton:
+#                size_hint_x: root.small
+#                text: 'share'
+##                font_name: 'webdings'
+#                on_press: viewer.save_image()
+
             Button:
                 size_hint_x: root.small
                 text: 'set'
@@ -206,7 +225,9 @@
                 size_hint_x: root.big
                 text: 'next'
                 on_press: viewer.next_strip(from_gui=True)
-
+#             setup in setup
+            # visibility of individual buttons
+            # suboption_box for sharing..
 <RandomNumberPopup>
     size_hint_y: 0.5
     auto_dismiss: False
@@ -230,7 +251,7 @@
             on_press: root.dismiss()
 
 
-<CustomPopup>:
+<AltTextPopup>:
     size_hint_y: 0.5
     auto_dismiss: False
     title: '...loading...'

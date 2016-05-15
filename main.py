@@ -32,7 +32,7 @@ from kivy.uix.popup import Popup
 
 from kivy.logger import Logger
 from kivy.animation import AnimationTransition
-from random import random
+from random import random as rnd
 
 # is not working with - python2 in android only
 # from requests import get
@@ -86,7 +86,7 @@ class ComicStripSlideViewer(Carousel):
         # return
         # self.downloader = ComicDownloader()
         if strip_number == None:
-            strip_number = int(random()*1600)
+            strip_number = int(rnd()*1600)
 
 
         # strip_number = 390
@@ -211,12 +211,12 @@ class ComicStripSlideViewer(Carousel):
 
     def set_number(self, random=False):
         if random==True:
-            num = random
+            num = int(rnd()*1600)
         else:
             p = RandomNumberPopup()
             p.open()
+            num = p.num
 
-        num = p.num
         self.sb.reset_to_number(num)
 
     def save_image(self):
