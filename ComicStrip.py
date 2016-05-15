@@ -33,8 +33,28 @@ class AltTextPopup(Popup):
 class ImageButton(ButtonBehavior, Image):
     pass
 
-class RandomNumberPopup(Popup):
-    pass
+class SetNumberPopup(Popup):
+    # value = NumericProperty()
+    # min = NumericProperty()
+    # max = NumericProperty()
+    slider = ObjectProperty()
+    def __init__(self, value, max, on_set_number_function, **kwargs):
+        super(Popup, self).__init__(**kwargs)
+        # self.value = value
+        # self.max = max
+        self.slider.value = value
+        self.slider.max = max
+        self.on_set_number_function = on_set_number_function
+    #
+    # def on_valu
+    def on_set_number(self, value):
+        # if self.on_dismiss_function is not None:
+        # value = self.slider.value
+        print('Selected value from SetNumberPopup = [{}]'.format(value))
+        self.on_set_number_function(int(value))
+        # self.on_set_number
+        self.dismiss()
+        # super(Popup, self).on_dismiss(**kwargs)
 
 class CenteredAsyncImage(AsyncImage):
     pass
@@ -74,10 +94,11 @@ class ComicStrip(GridLayout):
         super(GridLayout, self).__init__(**kwargs)
         self.update_data_from_result(results)
 
+
     def update_data_from_result_async(self, req, results):
         if results is not None:
             Logger.info('Async update from results of url request:')
-            [Logger.info(key) for key in results.keys()]
+            # [Logger.info(key) for key in results.keys()]
             self.update_data_from_result(results)
             return self.results
         else:

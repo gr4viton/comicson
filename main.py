@@ -32,7 +32,6 @@ from kivy.uix.popup import Popup
 
 from kivy.logger import Logger
 from kivy.animation import AnimationTransition
-from random import random as rnd
 
 # is not working with - python2 in android only
 # from requests import get
@@ -49,7 +48,7 @@ from os.path import join
 import ComicDownloader as cd
 from linked_list import StripBuffer
 
-from ComicStrip import RandomNumberPopup, CenteredAsyncImage
+from ComicStrip import SetNumberPopup, CenteredAsyncImage
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -85,14 +84,16 @@ class ComicStripSlideViewer(Carousel):
         # self.downloader = downloader
         # return
         # self.downloader = ComicDownloader()
-        if strip_number == None:
-            strip_number = int(rnd()*1600)
 
 
         # strip_number = 390
         # size = 3
-        self.downloader = cd.ComicDownloader(self)
+        comic_name = 'xkcd'
+        self.downloader = cd.ComicDownloader(self, comic_name)
+        self.downloader.get_max_id()
 
+        if strip_number == None:
+            strip_number = self.downloader.comic.get_random_number()
         self.sb = StripBuffer(current_id=strip_number, size=size,
                               downloader=self.downloader)
 
@@ -158,26 +159,30 @@ class ComicStripSlideViewer(Carousel):
         #     return
         tail_index = len(self.slides)-1
         print('yes')
+        last_index = self.last_index
+        # if last_index < 0:
+        #     last_index = self.downloader.comic.max_number - last_index
         print('current_index', current_index)
-        print('self.last_index', self.last_index)
+        print('self.last_index', last_index)
         print('tail_index', tail_index)
 
-        if current_index == 0 and self.last_index == tail_index:
+
+        if current_index == 0 and last_index == tail_index:
             # slided front
             self.load_next_strip()
-        elif current_index == tail_index and self.last_index == 0:
+        elif current_index == tail_index and last_index == 0:
             # slided back
             self.load_prev_strip()
-        elif self.last_index < current_index:
+        elif last_index < current_index:
             # slided front
             self.load_next_strip()
-        elif self.last_index > current_index:
+        elif last_index > current_index:
             # slided back
             self.load_prev_strip()
 
         if self.slides[current_index].num != self.sb.active.id:
-            print('The active strip id {}does not match the current index num {}'.format(
-            self.sb.active.id,self.slides[current_index].num
+            print('The active strip id {} does not match the current index num {}'.format(
+            self.sb.active.id, self.slides[current_index].num
             ))
 
     def on_sliding_end_current_slide(self, current_slide):
@@ -211,14 +216,16 @@ class ComicStripSlideViewer(Carousel):
 
     def set_number(self, random=False):
         if random==True:
-            num = int(rnd()*1600)
+            num = self.downloader.comic.get_random_number()
+            self.sb.set_active_id(num)
         else:
-            p = RandomNumberPopup()
+            id = self.sb.active.id
+            max = self.downloader.comic.max_number
+            p = SetNumberPopup(id, max, on_set_number_function=self.set_number_async)
             p.open()
-            num = p.num
 
-
-        self.sb.set_active_id(num)
+    def set_number_async(self, number):
+        self.sb.set_active_id(number)
 
     def save_image(self):
         print('Image not saved')

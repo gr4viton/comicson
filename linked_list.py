@@ -15,7 +15,7 @@ class Node(object):
             Node.downloader = downloader
 
         Node.count += 1
-        self.id = id
+        self.id = self.get_corrected_id(id)
         self.widget = self.downloader.create_strip_widget(self.id)
         print('created widget for id {} = {} node created = {}'.format(
             id, Node.count, self.widget))
@@ -25,8 +25,25 @@ class Node(object):
         self.next = next
         self.prev = prev
 
+    def get_corrected_id(self, id):
+        old_id = id
+        if id > self.downloader.comic.max_number:
+            # id = id - self.downloader.comic.max_number +1
+            id = id - self.downloader.comic.max_number
+            print('>>> new_id [{}] > max_number [{}], setting [{}]'.format(
+                old_id, self.downloader.comic.max_number, id))
+        elif id == 0:
+            id = self.downloader.comic.max_number
+        elif id < 0:
+            id = self.downloader.comic.max_number + id
+            print('>>> new_id [{}] < 1, setting [{}]'.format(
+                old_id, self.downloader.comic.max_number, id))
+
+        return id
+
     def add_next_on_tail(self):
-        new_id = self.id + 1
+        new_id = self.get_corrected_id(self.id + 1)
+
         if self.next is None:
             tail = self.next = Node(new_id, prev=self)
         else:
@@ -34,7 +51,8 @@ class Node(object):
         return tail
 
     def add_prev_on_tail(self):
-        new_id = self.id - 1
+        new_id = self.get_corrected_id(self.id - 1)
+
         if self.prev is None:
             tail = self.prev = Node(new_id, next=self)
         else:
@@ -42,7 +60,12 @@ class Node(object):
         return tail
 
     def update_data(self, id):
-        self.id = id
+        # if id > self.downloader.comic.max_number:
+        #     id = 1
+        # elif id < 1:
+        #     id = self.downloader.comic.max_number - id
+
+        self.id = self.get_corrected_id(id)
         self.downloader.get_strip_data(id,
                                        process_request=
                                        self.widget.update_data_from_result_async,
@@ -82,6 +105,7 @@ class StripBuffer(object):
         def shift(l, n):
             return l[n:] + l[:n]
         rng = shift(rng, self.side_count)
+        rng = [self.active.get_corrected_id(id) for id in rng]
         print(rng)
         for (node, id) in zip(self, rng):
             node.update_data(id)
@@ -123,7 +147,10 @@ class StripBuffer(object):
 
     def next_strip(self):
         new_front_id = self.active.id + 1 + self.side_count
-
+        if new_front_id == self.downloader.comic.max_number + 1:
+            new_front_id = 1
+        # if new_front_id > self.downloader.comic.max_number + 1:
+        #     new_front_id = self.downloader.comic.max_number - new_front_id + 1
         self.active = self.active.next
         self.tail_front = self.tail_front.next
         self.tail_back = self.tail_back.next
@@ -134,7 +161,10 @@ class StripBuffer(object):
 
     def prev_strip(self):
         new_back_id = self.active.id - 1 - self.side_count
-
+        if new_back_id == 0:
+            new_back_id = self.downloader.comic.max_number
+        # if new_back_id < 0:
+        #     new_back_id = self.downloader.comic.max_number - new_back_id
         self.active = self.active.prev
         self.tail_front = self.tail_front.prev
         self.tail_back = self.tail_back.prev
