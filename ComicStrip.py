@@ -25,6 +25,13 @@ from kivy.uix.image import AsyncImage
 from kivy.logger import Logger
 
 class CustomPopup(Popup):
+    text = StringProperty()
+    def __init__(self, text, **kwargs):
+        super(Popup, self).__init__(**kwargs)
+        self.text = text
+
+
+class RandomNumberPopup(Popup):
     pass
 
 class CenteredAsyncImage(AsyncImage):
@@ -54,8 +61,12 @@ class ComicStrip(GridLayout):
     num = NumericProperty('-')
 
     def popup_alt(self, whatever=None):
-        p = CustomPopup(title=self.alt)
+        titlenum = self.titlenum()
+        p = CustomPopup(title=titlenum, text=self.alt)
         p.open()
+
+    def titlenum(self):
+        return '[{}] {}'.format(self.num, self.title)
 
     def __init__(self, results, **kwargs):
         super(GridLayout, self).__init__(**kwargs)

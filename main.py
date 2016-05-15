@@ -45,11 +45,11 @@ from kivy.storage.dictstore import DictStore
 from kivy.storage.jsonstore import JsonStore
 from os.path import join
 
-from ComicStrip import CenteredAsyncImage
 
 import ComicDownloader as cd
 from linked_list import StripBuffer
 
+from ComicStrip import RandomNumberPopup, CenteredAsyncImage
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -204,30 +204,24 @@ class ComicStripSlideViewer(Carousel):
 
     def next_strip(self, from_gui=False):
         self.load_next()
-        # self.ignore_on_slide_end_count +=1
 
     def prev_strip(self, from_gui=False):
-        # self.load_previous()
         self.load_next(mode='prev')
-        # self.ignore_on_slide_end_count +=1
-
-    # def reload_buffer(self):
-    #     self.comic_strip_index = self.index
-    #     if(self.comic_strip_index+1 == self.buffer_count):
-    #         actualize_index = 0
-    #     else:
-    #         actualize_index = self.comic_strip_index + 1
-    #
-    #     grid_layout = self.buffer[actualize_index]
-    #     strip_number = self.strip_number = self.strip_number+1
-    #     # strip_number = grid_layout.children[0].num + 1
-    #     grid_layout.clear_widgets()
-    #
-    #
-    #     comic_strip = self.downloader.update_strip(strip_number)
-    #     grid_layout.add_widget(comic_strip)
 
 
+    def set_number(self, random=False):
+        if random==True:
+            num = random
+        else:
+            p = RandomNumberPopup()
+            p.open()
+
+        num = p.num
+        self.sb.reset_to_number(num)
+
+    def save_image(self):
+        print('Image not saved')
+        pass
 
     # def get_slide_container(self, slide):
 

@@ -81,7 +81,7 @@
 
     GridLayout:
         cols:2
-        padding: 5,5,5,5
+        padding: 3,3,3,3
 #        title: root.title
 #        num: root.num
         size_hint: 1, 0.1
@@ -175,11 +175,17 @@
     big: 0.35
     GridLayout
         cols: 1
+        ComicStripSlideViewer:
+            id: viewer
+            parent: root
+#            downloader: root.downloader
+            buffer_count: 3
+
         GridLayout:
             cols:5
             height: 13
             size_hint: 1, 0.1
-            padding: 5,5,5,5
+            padding: 3,3,3,3
             Button:
                 size_hint_x: root.big
                 text: 'prev'
@@ -187,22 +193,42 @@
             Button:
                 size_hint_x: root.small
                 text: 'rnd'
+                on_press: viewer.set_number(random=True)
             Button:
                 size_hint_x: root.small
                 text: 'save'
+                on_press: viewer.save_image()
             Button:
                 size_hint_x: root.small
                 text: 'set'
+                on_press: viewer.set_number()
             Button:
                 size_hint_x: root.big
                 text: 'next'
                 on_press: viewer.next_strip(from_gui=True)
 
-        ComicStripSlideViewer:
-            id: viewer
-            parent: root
-#            downloader: root.downloader
-            buffer_count: 3
+<RandomNumberPopup>
+    size_hint_y: 0.5
+    auto_dismiss: False
+    title: '...loading...'
+#    background_color: (1, 1, 1, 125)
+    color: (1,1,1,0.5)
+    num: 1
+    GridLayout:
+        cols: 1
+        Slider:
+
+        Button:
+    #        size_hint: .5, .5
+            size_hint_y: 0.2
+            text: 'Open number'
+            on_press: root.dismiss()
+        Button:
+    #        size_hint: .5, .5
+            size_hint_y: 0.2
+            text: 'Click me to dismiss'
+            on_press: root.dismiss()
+
 
 <CustomPopup>:
     size_hint_y: 0.5
@@ -210,12 +236,23 @@
     title: '...loading...'
 #    background_color: (1, 1, 1, 125)
     color: (1,1,1,0.5)
+    text: '...loading...'
+    GridLayout:
+        cols: 1
+        Label:
+            text: root.text
+            multiline: True
+#            padding: dp(10), dp(8)
+#            size_hint: None, None
+            size: self.texture_size
+            text_size: self.size
+            valign: 'middle'
+        Button:
+        #        size_hint: .5, .5
+            size_hint_y: 0.2
+            text: 'Click me to dismiss'
+            on_press: root.dismiss()
 
-    Button:
-#        size_hint: .5, .5
-        size_hint_y: 0.1
-        text: 'Click me to dismiss'
-        on_press: root.dismiss()
 
 <Page>:
     cols: 3

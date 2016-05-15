@@ -76,6 +76,9 @@ class StripBuffer(object):
         print(self.downloader)
         self.set_buffer_size(current_id, size)
 
+    def reset_to_number(self, new_id):
+
+        pass
 
     def set_buffer_size(self, current_id=340, size=5):
 
