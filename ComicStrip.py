@@ -69,6 +69,11 @@ class ComicStripImage( ButtonBehavior, AsyncImage):
     #     pass
     pass
 
+
+
+
+
+
 class ComicStrip(GridLayout):
     # num = -1
     # alt = ''
